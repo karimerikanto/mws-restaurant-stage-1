@@ -73,9 +73,10 @@ nav h1 a {
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
+  display: inline-block;
 }
 nav a {
-  padding: 1.5em;
+  padding: 0.5em;
 }
 #breadcrumb {
     padding: 10px 20px 16px;
