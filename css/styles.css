@@ -333,3 +333,23 @@ nav a {
   color: #444;
   padding: 3px 10px;
 }
+/* ====================== Offline page ====================== */
+#offline-container {
+  text-align: center;
+}
+#offline-container p {
+  font-size: 14pt;
+  padding: 20px;
+}
+#offline-container a {
+  background-color: orange;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  margin: 20px;
+}
