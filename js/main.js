@@ -20,7 +20,7 @@ registerServiceworker = () => {
   if (!navigator.serviceWorker) return;
 
   navigator.serviceWorker
-     .register('/js/sw.js');
+     .register('../sw.js');
 }
 
 /**
