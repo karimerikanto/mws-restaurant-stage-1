@@ -1,4 +1,4 @@
-const staticCacheName = 'restaurant-review-v4';
+const staticCacheName = 'restaurant-review-v5';
 const OFFLINE_URL = 'offline.html';
 
 /**
