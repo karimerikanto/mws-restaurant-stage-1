@@ -218,6 +218,9 @@ nav a {
 .inside header {
   width: 100%;
 }
+.inside h3 {
+  margin: 10px;
+}
 .inside #map-container {
   background: blue none repeat scroll 0 0;
   height: 500px;
