@@ -85,6 +85,7 @@ nav a {
     font-size: 17px;
     margin: 0;
     width: 100%;
+    box-sizing: border-box;
 }
 
 /* Display list items side by side */
