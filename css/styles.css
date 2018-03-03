@@ -45,7 +45,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   min-height: 100%;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
 }
 #footer {
@@ -224,14 +224,12 @@ nav a {
 }
 .inside #map-container {
   background: blue none repeat scroll 0 0;
-  height: 500px;
   width: 100%;
 }
 @media screen and (min-width: 1000px){
   .inside #map-container {
     width: calc((100% - 10px) / 2);
     order: 2;
-    height: 700px;
   }
 }
 .inside #map {
