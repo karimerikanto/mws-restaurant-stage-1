@@ -225,11 +225,13 @@ nav a {
 .inside #map-container {
   background: blue none repeat scroll 0 0;
   width: 100%;
+  height: 400px;
 }
 @media screen and (min-width: 1000px){
   .inside #map-container {
     width: calc((100% - 10px) / 2);
     order: 2;
+    height: auto;
   }
 }
 .inside #map {
