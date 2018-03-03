@@ -310,7 +310,6 @@ nav a {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  align-items: top;
 }
 #reviews-list li {
   background-color: #fff;
@@ -321,8 +320,17 @@ nav a {
   overflow: hidden;
   padding: 20px;
   position: relative;
-  width: 85%;
-  max-width: 400px;
+  width: 100%;
+}
+@media screen and (min-width: 900px){
+  #reviews-list li {
+    width: calc(50% - 84px);
+  }
+}
+@media screen and (min-width: 1300px){
+  #reviews-list li {
+    width: calc(33% - 84px);
+  }
 }
 #reviews-list li p {
   margin: 0 0 10px;
