@@ -113,7 +113,10 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   let tabindex = 7;
 
   reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review, tabindex));
+    const li = createReviewHTML(review);
+    setTabIndexToReviewListItem(li, tabindex);
+    ul.appendChild(li);
+
     tabindex++;
   });
   container.appendChild(ul);
@@ -122,9 +125,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 /**
  * Create review HTML and add it to the webpage.
  */
-createReviewHTML = (review, tabindex) => {
+createReviewHTML = (review) => {
   const li = document.createElement('li');
-  li.setAttribute("tabindex", tabindex);
 
   const name = document.createElement('p');
   name.innerHTML = review.name;
@@ -143,6 +145,13 @@ createReviewHTML = (review, tabindex) => {
   li.appendChild(comments);
 
   return li;
+}
+
+/**
+ * Set tab index to the review list item
+ */
+setTabIndexToReviewListItem = (listItem, tabindex) => {
+  listItem.setAttribute("tabindex", tabindex);
 }
 
 /**

@@ -140,7 +140,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   let tabindex = 4;
 
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant, tabindex));
+    const li = createRestaurantHTML(restaurant, tabindex);
+    setTabIndexToRestaurantListItem(li, tabindex);
+    ul.append(li);
     tabindex = tabindex + 2;
   });
   addMarkersToMap();
@@ -149,7 +151,7 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
-createRestaurantHTML = (restaurant, tabindex) => {
+createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
   const image = document.createElement('img');
@@ -161,7 +163,6 @@ createRestaurantHTML = (restaurant, tabindex) => {
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
-  name.setAttribute("tabindex", tabindex);
   li.append(name);
 
   const neighborhood = document.createElement('p');
@@ -175,11 +176,21 @@ createRestaurantHTML = (restaurant, tabindex) => {
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.setAttribute('aria-label', `View details of ${restaurant.name}`);
-  more.setAttribute("tabindex", (tabindex + 1));
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
 
   return li
+}
+
+/**
+ * Set tab index to the restaurant list item
+ */
+setTabIndexToRestaurantListItem = (listItem, tabindex) => {
+  const name = listItem.getElementsByTagName('h1');
+  name[0].setAttribute("tabindex", tabindex);
+
+  const more = listItem.getElementsByTagName('a');
+  more[0].setAttribute("tabindex", (tabindex + 1));
 }
 
 /**
