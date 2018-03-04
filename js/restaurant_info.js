@@ -2,6 +2,23 @@ let restaurant;
 var map;
 
 /**
+ * Register service as soon as the page is loaded.
+ */
+document.addEventListener('DOMContentLoaded', (event) => {
+  registerServiceworker();
+});
+
+/**
+ * Register service worker.
+ */
+registerServiceworker = () => {
+  if (!navigator.serviceWorker) return;
+
+  navigator.serviceWorker
+     .register('../sw.js');
+}
+
+/**
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
