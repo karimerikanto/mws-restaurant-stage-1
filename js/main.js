@@ -161,7 +161,7 @@ createRestaurantHTML = (restaurant) => {
   image.alt = restaurant.photograph_alt;
   li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
 
@@ -186,7 +186,7 @@ createRestaurantHTML = (restaurant) => {
  * Set tab index to the restaurant list item
  */
 setTabIndexToRestaurantListItem = (listItem, tabindex) => {
-  const name = listItem.getElementsByTagName('h1');
+  const name = listItem.getElementsByTagName('h2');
   name[0].setAttribute("tabindex", tabindex);
 
   const more = listItem.getElementsByTagName('a');
