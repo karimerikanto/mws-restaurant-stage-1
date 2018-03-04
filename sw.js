@@ -24,7 +24,7 @@ self.addEventListener('install', function(event) {
  * Add fetch event listener to service worker.
  */
 self.addEventListener('fetch', function(event) {
-  var requestUrl = new URL(event.request.url);
+  const requestUrl = new URL(event.request.url);
 
   event.respondWith(
     caches.match(event.request).then(function(response) {
