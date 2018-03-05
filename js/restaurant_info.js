@@ -70,6 +70,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   name.innerHTML = restaurant.name;
 
   const address = document.getElementById('restaurant-address');
+  address.setAttribute('tabindex', 0);
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
@@ -96,6 +97,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
+    row.setAttribute('tabindex', 0);
 
     const day = document.createElement('td');
     day.innerHTML = key;
@@ -116,7 +118,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
-  title.setAttribute("tabindex", 6);
+  title.setAttribute("tabindex", 0);
   container.appendChild(title);
 
   if (!reviews) {
@@ -127,15 +129,11 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   }
 
   const ul = document.getElementById('reviews-list');
-  let tabindex = 7;
 
   reviews.forEach(review => {
-    const li = createReviewHTML(review);
-    setTabIndexToReviewListItem(li, tabindex);
-    ul.appendChild(li);
-
-    tabindex++;
+    ul.appendChild(createReviewHTML(review));
   });
+
   container.appendChild(ul);
 }
 
@@ -144,6 +142,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
+  li.setAttribute("tabindex", 0);
 
   const name = document.createElement('p');
   name.innerHTML = review.name;
@@ -162,13 +161,6 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
-}
-
-/**
- * Set tab index to the review list item
- */
-setTabIndexToReviewListItem = (listItem, tabindex) => {
-  listItem.setAttribute("tabindex", tabindex);
 }
 
 /**
