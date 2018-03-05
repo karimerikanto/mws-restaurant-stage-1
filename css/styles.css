@@ -50,7 +50,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 }
 #footer {
   background-color: #444;
-  color: #aaa;
+  color: #fff;
   font-size: 8pt;
   letter-spacing: 1px;
   padding: 25px;
@@ -184,7 +184,7 @@ nav a {
   width: 100%;
 }
 #restaurants-list li h2 {
-  color: #f18200;
+  color: #e68a00;
   font-family: Arial,sans-serif;
   font-size: 14pt;
   font-weight: 200;
@@ -203,7 +203,7 @@ nav a {
   }
 }
 #restaurants-list li a {
-  background-color: orange;
+  background-color: #e68a00;
   border-bottom: 3px solid #eee;
   color: #fff;
   display: inline-block;
@@ -240,7 +240,7 @@ nav a {
   width: 100%;
 }
 #restaurant-name {
-  color: #f18200;
+  color: #e68a00;
   font-family: Arial,sans-serif;
   font-size: 20pt;
   font-weight: 200;
@@ -299,7 +299,7 @@ nav a {
   }
 }
 #reviews-container h2 {
-  color: #f58500;
+  color: #e68a00;
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;
@@ -351,7 +351,7 @@ nav a {
   padding: 20px;
 }
 #offline-container a {
-  background-color: orange;
+  background-color: #e68a00;
   border-bottom: 3px solid #eee;
   color: #fff;
   display: inline-block;
