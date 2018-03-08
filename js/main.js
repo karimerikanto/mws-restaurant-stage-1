@@ -3,14 +3,15 @@ let restaurants,
   cuisines
 var map
 var markers = []
+let mapInitialized = false;
+let restaurantsInitialized = false;
 
 /**
  * Register service worker and fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   registerServiceworker();
-  fetchNeighborhoods();
-  fetchCuisines();
+  updateRestaurants();
 });
 
 /**
@@ -24,17 +25,19 @@ registerServiceworker = () => {
 }
 
 /**
- * Fetch all neighborhoods and set their HTML.
+ * Update all neighborhoods and set their HTML.
  */
-fetchNeighborhoods = () => {
-  DBHelper.fetchNeighborhoods((error, neighborhoods) => {
-    if (error) { // Got an error
-      console.error(error);
-    } else {
-      self.neighborhoods = neighborhoods;
-      fillNeighborhoodsHTML();
-    }
-  });
+updateNeighborhoodsIfNeeded = (restaurants = self.restaurants) => {
+  if(self.neighborhoods === undefined){
+    // Get all neighborhoods from all restaurants
+    const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
+
+    // Remove duplicates from neighborhoods
+    const uniqueNeighborhoods = neighborhoods.filter((v, i) => neighborhoods.indexOf(v) == i);
+
+    self.neighborhoods = uniqueNeighborhoods;
+    fillNeighborhoodsHTML();
+  }
 }
 
 /**
@@ -51,17 +54,19 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 }
 
 /**
- * Fetch all cuisines and set their HTML.
+ * Update all cuisines and set their HTML.
  */
-fetchCuisines = () => {
-  DBHelper.fetchCuisines((error, cuisines) => {
-    if (error) { // Got an error!
-      console.error(error);
-    } else {
-      self.cuisines = cuisines;
-      fillCuisinesHTML();
-    }
-  });
+updateCuisinesIfNeeded = (restaurants = self.restaurants) => {
+  if(self.cuisines === undefined){
+    // Get all cuisines from all restaurants
+    const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
+
+    // Remove duplicates from cuisines
+    const uniqueCuisines = cuisines.filter((v, i) => cuisines.indexOf(v) == i);
+
+    self.cuisines = uniqueCuisines;
+    fillCuisinesHTML();
+  }
 }
 
 /**
@@ -91,7 +96,13 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
-  updateRestaurants();
+
+
+  if(restaurantsInitialized){
+    addMarkersToMap();
+  }
+
+  mapInitialized = true;
 }
 
 /**
@@ -107,14 +118,42 @@ updateRestaurants = () => {
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
 
-  DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
+  DBHelper.fetchRestaurants((error, restaurants) => {
     if (error) { // Got an error!
       console.error(error);
     } else {
+      self.restaurants = restaurants;
+
+      updateNeighborhoodsIfNeeded();
+      updateCuisinesIfNeeded();
+
+      restaurants = filterRestaurants(restaurants, cuisine, neighborhood);
+
       resetRestaurants(restaurants);
       fillRestaurantsHTML();
+
+      if(mapInitialized){
+        addMarkersToMap();
+      }
+
+      restaurantsInitialized = true;
     }
   })
+}
+
+/**
+ * Filter restaurants by cuisine type and/or neighborhood.
+ */
+filterRestaurants = (restaurants, cuisine, neighborhood) => {
+  if(cuisine != 'all'){
+    restaurants = restaurants.filter(r => r.cuisine_type == cuisine);
+  }
+
+  if(neighborhood != 'all'){
+    restaurants = restaurants.filter(r => r.neighborhood == neighborhood);
+  }
+
+  return restaurants;
 }
 
 /**
@@ -141,7 +180,6 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
-  addMarkersToMap();
 }
 
 /**
