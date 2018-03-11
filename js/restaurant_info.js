@@ -78,6 +78,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`;
   image.alt = `An image from ${restaurant.name}`;
+  image.onerror = (e) => { 
+    e.target.setAttribute('src', '/img/image_missing.svg');
+    e.target.setAttribute('srcset', '');
+  };
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

@@ -35,7 +35,6 @@ filtersInitialized = () => {
  * Initialize filters.
  */
 initializeFilters = (restaurants = self.restaurants) => {
-  console.log('init filters');
   updateCuisines(restaurants);
   updateNeighborhoods(restaurants);
 }
@@ -210,6 +209,12 @@ createRestaurantHTML = (restaurant) => {
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
   image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`;
   image.alt = `An image from ${restaurant.name}`;
+  image.onerror = (e) => { 
+    e.target.setAttribute('src', '/img/image_missing.svg');
+    e.target.setAttribute('srcset', '');
+  };
+  
+
   li.append(image);
 
   const name = document.createElement('h2');
