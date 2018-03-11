@@ -20,7 +20,7 @@ class DBHelper {
       .then(function(restaurantDatasAsJson){
         callback(null, restaurantDatasAsJson);
       })
-      .catch(e => callback(error, `Request failed. Returned status of ${e.status}`));
+      .catch(e => callback(e, `Request failed. Returned status of ${e.status}`));
   }
 
   /**
@@ -32,7 +32,7 @@ class DBHelper {
       .then(function(restaurantDataAsJson){
         callback(null, restaurantDataAsJson);
       })
-      .catch(e => callback(error, `Request failed. Returned status of ${e.status}`));
+      .catch(e => callback(e, `Request failed. Returned status of ${e.status}`));
   }
 
   /**
