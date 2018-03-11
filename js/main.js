@@ -25,9 +25,25 @@ registerServiceworker = () => {
 }
 
 /**
+ * Are filters initialized.
+ */
+filtersInitialized = () => {
+  return self.cuisines && self.neighborhoods;
+}
+
+/**
+ * Initialize filters.
+ */
+initializeFilters = (restaurants = self.restaurants) => {
+  console.log('init filters');
+  updateCuisines(restaurants);
+  updateNeighborhoods(restaurants);
+}
+
+/**
  * Update all neighborhoods and set their HTML.
  */
-updateNeighborhoodsIfNeeded = (restaurants = self.restaurants) => {
+updateNeighborhoods = (restaurants) => {
   if(self.neighborhoods === undefined){
     // Get all neighborhoods from all restaurants
     const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood);
@@ -56,7 +72,7 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
 /**
  * Update all cuisines and set their HTML.
  */
-updateCuisinesIfNeeded = (restaurants = self.restaurants) => {
+updateCuisines = (restaurants) => {
   if(self.cuisines === undefined){
     // Get all cuisines from all restaurants
     const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type);
@@ -124,8 +140,9 @@ updateRestaurants = () => {
     } else {
       self.restaurants = restaurants;
 
-      updateNeighborhoodsIfNeeded();
-      updateCuisinesIfNeeded();
+      if(!filtersInitialized()) {
+        initializeFilters();
+      }
 
       restaurants = filterRestaurants(restaurants, cuisine, neighborhood);
 
