@@ -75,9 +75,17 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`;
   image.alt = `An image from ${restaurant.name}`;
+
+  if(restaurant.photograph) {
+    image.src = DBHelper.imageUrlForRestaurant(restaurant);
+    image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`;
+  }
+  else {
+    image.src = '/img/image_missing.svg';
+  }
+
+  //If image not found, serve image missing picture
   image.onerror = (e) => { 
     e.target.setAttribute('src', '/img/image_missing.svg');
     e.target.setAttribute('srcset', '');
