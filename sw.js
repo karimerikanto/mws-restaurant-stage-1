@@ -9,6 +9,7 @@ self.addEventListener('install', function(event) {
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
         'css/styles.css',
+        'js/idb.js',
         'js/main.js',
         'js/dbhelper.js',
         'js/restaurant_info.js',
@@ -25,7 +26,7 @@ self.addEventListener('install', function(event) {
  */
 self.addEventListener('fetch', function(event) {
   const requestUrl = new URL(event.request.url);
-  
+
   event.respondWith(
     caches.match(event.request).then(function(response) {
       return response || fetch(event.request).catch(error => {
