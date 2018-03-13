@@ -1,10 +1,12 @@
 let restaurant;
 var map;
+let dbPromise;
 
 /**
  * Register service as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  self.dbPromise = DBHelper.openDatabase();
   registerServiceworker();
 });
 
@@ -50,7 +52,7 @@ fetchRestaurantFromURL = (callback) => {
     error = 'No restaurant id in URL'
     callback(error, null);
   } else {
-    DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+    DBHelper.fetchRestaurantById(id, self.dbPromise, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
         console.error(error);

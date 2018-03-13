@@ -5,11 +5,13 @@ var map
 var markers = []
 let mapInitialized = false;
 let restaurantsInitialized = false;
+let dbPromise;
 
 /**
  * Register service worker and fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  self.dbPromise = DBHelper.openDatabase();
   registerServiceworker();
   updateRestaurants();
 });
@@ -106,6 +108,7 @@ window.initMap = () => {
     lat: 40.722216,
     lng: -73.987501
   };
+
   self.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
@@ -132,9 +135,9 @@ updateRestaurants = () => {
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
-
-  DBHelper.fetchRestaurants((error, restaurants) => {
-    if (error) { // Got an error!
+  
+  DBHelper.fetchRestaurants(self.dbPromise, (error, restaurants) => {
+    if (error) {
       console.error(error);
     } else {
       self.restaurants = restaurants;
