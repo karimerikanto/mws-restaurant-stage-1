@@ -26,6 +26,16 @@ self.addEventListener('install', function(event) {
  */
 self.addEventListener('fetch', function(event) {
   const requestUrl = new URL(event.request.url);
+  
+  if (requestUrl.origin === location.origin) {
+    //If the requested page is restaurant.html, serve the empty restaurant info page
+    if (requestUrl.pathname === '/restaurant.html') {
+      event.respondWith(caches.match('restaurant.html')
+        .then(response => {
+          return response || fetch(event.request);
+      }));
+    }
+  }
 
   event.respondWith(
     caches.match(event.request).then(function(response) {
