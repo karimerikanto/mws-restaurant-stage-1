@@ -15,7 +15,14 @@ self.addEventListener('install', function(event) {
         'js/restaurant_info.js',
         '/',
         'restaurant.html',
-        'offline.html'
+        'offline.html',
+        'manifest.webmanifest',
+        'img/icons/icon-128x128.png',
+        'img/icons/icon-144x144.png',
+        'img/icons/icon-152x152.png',
+        'img/icons/icon-192x192.png',
+        'img/icons/icon-256x256.png',
+        'img/icons/icon-512x512.png'
       ]);
     })
   );
