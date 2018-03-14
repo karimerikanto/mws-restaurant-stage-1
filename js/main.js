@@ -217,12 +217,14 @@ createRestaurantHTML = (restaurant) => {
   }
   else {
     image.src = '/img/image_missing.svg';
+    image.alt = `No image`;
   }
 
   //If image not found, serve image missing picture
   image.onerror = (e) => { 
     e.target.setAttribute('src', '/img/image_missing.svg');
     e.target.setAttribute('srcset', '');
+    e.target.alt = `No image`;
   };
   
 
