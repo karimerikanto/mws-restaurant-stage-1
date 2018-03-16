@@ -37,7 +37,7 @@ self.addEventListener('fetch', function(event) {
   if (requestUrl.origin === location.origin) {
     //If the requested page is restaurant.html, serve the empty restaurant info page
     if (requestUrl.pathname === '/restaurant.html') {
-      event.respondWith(caches.match('restaurant.html')
+      return event.respondWith(caches.match('restaurant.html')
         .then(response => {
           return response || fetch(event.request);
       }));
