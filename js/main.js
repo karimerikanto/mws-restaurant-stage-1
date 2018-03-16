@@ -1,8 +1,8 @@
 let restaurants,
   neighborhoods,
-  cuisines
-var map
-var markers = []
+  cuisines;
+var map;
+var markers = [];
 let mapInitialized = false;
 let restaurantsInitialized = false;
 let dbPromise;
@@ -13,7 +13,7 @@ let dbPromise;
 document.addEventListener('DOMContentLoaded', (event) => {
   self.dbPromise = DBHelper.openDatabase();
   registerServiceworker();
-  updateRestaurants();
+  fetchRestaurants();
 });
 
 /**
@@ -124,9 +124,48 @@ window.initMap = () => {
 }
 
 /**
+ * Fetch and update restaurants.
+ */
+fetchRestaurants = () => {
+  DBHelper.fetchLocalDbRestaurants(self.dbPromise, (error, restaurants) => {
+    if (error) {
+      console.error(error);
+    } 
+    else {
+      updateRestaurants(restaurants);
+    }
+
+    //Fetch restaurants from the remote server if we have any new restaurants to be saved for the next time.
+    DBHelper.fetchRestaurants((error, restaurants) => {
+      if (error) {
+        console.error(error);
+      } 
+      else {
+        DBHelper.saveRestaurantsToLocalDb(self.dbPromise, restaurants, (error) => {
+          if (error) {
+            console.error(error);
+          }
+        });
+
+        //Set restaurants if there was no restaurants in the local storage or there was an error.
+        if(!self.restaurants ||
+          self.restaurants.length === 0) {
+          updateRestaurants(restaurants);
+        }
+      }
+    });
+  });
+}
+
+/**
  * Update page and map for current restaurants.
  */
-updateRestaurants = () => {
+updateRestaurants = (restaurants) => {
+  if(!restaurants || 
+    restaurants.length === 0) {
+    return;
+  }
+
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
@@ -136,28 +175,22 @@ updateRestaurants = () => {
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
   
-  DBHelper.fetchRestaurants(self.dbPromise, (error, restaurants) => {
-    if (error) {
-      console.error(error);
-    } else {
-      self.restaurants = restaurants;
+  self.restaurants = restaurants;
 
-      if(!filtersInitialized()) {
-        initializeFilters();
-      }
+  if(!filtersInitialized()) {
+    initializeFilters();
+  }
 
-      restaurants = filterRestaurants(restaurants, cuisine, neighborhood);
+  restaurants = filterRestaurants(restaurants, cuisine, neighborhood);
 
-      resetRestaurants(restaurants);
-      fillRestaurantsHTML();
+  resetRestaurants(restaurants);
+  fillRestaurantsHTML();
 
-      if(mapInitialized){
-        addMarkersToMap();
-      }
+  if(mapInitialized){
+    addMarkersToMap();
+  }
 
-      restaurantsInitialized = true;
-    }
-  })
+  restaurantsInitialized = true;
 }
 
 /**

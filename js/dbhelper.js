@@ -73,32 +73,25 @@ class DBHelper {
   }
 
   /**
-   * Fetch all restaurants.
+   * Fetch all restaurants from the remote server.
    */
-  static fetchRestaurants(dbPromise, callback) {
+  static fetchRestaurants(callback) {
     fetch(`${DBHelper.DATABASE_URL}/restaurants`)
       .then(response => response.json())
-      .then(restaurantDatasAsJson => {
-        DBHelper.saveRestaurantsToLocalDb(dbPromise, restaurantDatasAsJson, callback);
-        callback(null, restaurantDatasAsJson);
+      .then(restaurants => {
+        callback(null, restaurants);
       })
-      .catch(e => {
-        console.log('Error fetching restaurants, getting restaurants from local storage.');
-        DBHelper.fetchLocalDbRestaurants(dbPromise, callback);
-      });
+    .catch(e => callback(e, `Error when fetching restaurants from the remote server.`));
   }
 
   /**
-   * Fetch a restaurant by its ID.
+   * Fetch a restaurant by its ID from the remote server.
    */
-  static fetchRestaurantById(id, dbPromise, callback) {
+  static fetchRestaurantById(id, callback) {
     fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}`)
       .then(response => response.json())
       .then(restaurantDataAsJson => callback(null, restaurantDataAsJson))
-      .catch(e => {
-        console.log('Error fetching restaurant, getting restaurant from local storage.');
-        DBHelper.fetchLocalDbRestaurantById(id, dbPromise, callback);
-      });
+      .catch(e => callback(e, `Error when fetching restaurant from the remote server.`));
   }
 
   /**

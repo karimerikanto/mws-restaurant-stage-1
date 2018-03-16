@@ -1,7 +1,6 @@
 let restaurant;
 var map;
 let dbPromise;
-
 /**
  * Register service as soon as the page is loaded.
  */
@@ -33,7 +32,7 @@ window.initMap = () => {
         center: restaurant.latlng,
         scrollwheel: false
       });
-      fillBreadcrumb();
+
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
     }
   });
@@ -47,19 +46,45 @@ fetchRestaurantFromURL = (callback) => {
     callback(null, self.restaurant)
     return;
   }
+
   const id = getParameterByName('id');
+
   if (!id) { // no id found in URL
     error = 'No restaurant id in URL'
     callback(error, null);
-  } else {
-    DBHelper.fetchRestaurantById(id, self.dbPromise, (error, restaurant) => {
-      self.restaurant = restaurant;
-      if (!restaurant) {
+  } 
+  else {
+    DBHelper.fetchLocalDbRestaurantById(id, self.dbPromise, (error, restaurant) => {
+      if (error) {
         console.error(error);
-        return;
       }
-      fillRestaurantHTML();
-      callback(null, restaurant)
+
+      //If the restaurant is not in the local storage, get it from the remote server and save it.
+      if(!restaurant) {
+        DBHelper.fetchRestaurantById(id, (error, restaurant) => {
+          if (error) {
+            console.error(error);
+            return;
+          }
+
+          if(restaurant){
+            DBHelper.saveRestaurantsToLocalDb(self.dbPromise, [restaurant], (error) => {
+              if (error) {
+                console.error(error);
+              }
+            });
+
+            self.restaurant = restaurant;
+            callback(null, restaurant);
+            fillRestaurantHTML();
+          }
+        });
+      }
+      else{
+        self.restaurant = restaurant;
+        callback(null, restaurant);
+        fillRestaurantHTML();
+      }
     });
   }
 }
@@ -68,6 +93,8 @@ fetchRestaurantFromURL = (callback) => {
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
+  fillBreadcrumb();
+
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
