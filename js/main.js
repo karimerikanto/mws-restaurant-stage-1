@@ -246,7 +246,9 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
 
   restaurants.forEach(restaurant => {
-    ul.append(createRestaurantHTML(restaurant));
+    createRestaurantHTML(restaurant).then(listItem => {
+      ul.append(listItem);
+    });
   });
 }
 
@@ -254,59 +256,61 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  * Create restaurant HTML.
  */
 createRestaurantHTML = (restaurant) => {
-  const li = document.createElement('li');
-  const image = document.createElement('img');
-  image.classList = 'restaurant-img';
-  image.alt = `An image from ${restaurant.name}`;
+  return new Promise(resolve => {
+    const li = document.createElement('li');
+    const image = document.createElement('img');
+    image.classList = 'restaurant-img';
+    image.alt = `An image from ${restaurant.name}`;
 
-  if(restaurant.photograph) {
-    image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant));
-    image.setAttribute('data-srcset', `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`);
-  }
-  else {
-    image.setAttribute('data-src', '/img/image_missing.svg');
-    image.setAttribute('data-srcset', '');
-    image.alt = `No image`;
-  }
+    if(restaurant.photograph) {
+      image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant));
+      image.setAttribute('data-srcset', `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`);
+    }
+    else {
+      image.setAttribute('data-src', '/img/image_missing.svg');
+      image.setAttribute('data-srcset', '');
+      image.alt = `No image`;
+    }
 
-  //If image not found, serve image missing picture
-  image.onerror = (e) => { 
-    e.target.setAttribute('data-src', '/img/image_missing.svg');
-    e.target.setAttribute('data-srcset', '');
-    e.target.alt = `No image`;
-  };
+    //If image not found, serve image missing picture
+    image.onerror = (e) => { 
+      e.target.setAttribute('data-src', '/img/image_missing.svg');
+      e.target.setAttribute('data-srcset', '');
+      e.target.alt = `No image`;
+    };
 
-  if(self.observer) {
-    self.observer.observe(image);
-  }
-  else {
-    image.src = image.getAttribute('data-src');
-    image.srcset = image.getAttribute('data-srcset');
-  }
+    if(self.observer) {
+      self.observer.observe(image);
+    }
+    else {
+      image.src = image.getAttribute('data-src');
+      image.srcset = image.getAttribute('data-srcset');
+    }
 
-  li.append(image);
+    li.append(image);
 
-  const name = document.createElement('h2');
-  name.innerHTML = restaurant.name;
-  name.setAttribute("tabindex", 0);
-  li.append(name);
+    const name = document.createElement('h2');
+    name.innerHTML = restaurant.name;
+    name.setAttribute("tabindex", 0);
+    li.append(name);
 
-  const neighborhood = document.createElement('p');
-  neighborhood.innerHTML = restaurant.neighborhood;
-  li.append(neighborhood);
+    const neighborhood = document.createElement('p');
+    neighborhood.innerHTML = restaurant.neighborhood;
+    li.append(neighborhood);
 
-  const address = document.createElement('p');
-  address.innerHTML = restaurant.address;
-  li.append(address);
+    const address = document.createElement('p');
+    address.innerHTML = restaurant.address;
+    li.append(address);
 
-  const more = document.createElement('a');
-  more.innerHTML = 'View Details';
-  more.setAttribute('aria-label', `View details of ${restaurant.name}`);
-  more.href = DBHelper.urlForRestaurant(restaurant);
-  more.setAttribute("tabindex", 0);
-  li.append(more);
+    const more = document.createElement('a');
+    more.innerHTML = 'View Details';
+    more.setAttribute('aria-label', `View details of ${restaurant.name}`);
+    more.href = DBHelper.urlForRestaurant(restaurant);
+    more.setAttribute("tabindex", 0);
+    li.append(more)
 
-  return li;
+    resolve(li);
+  });
 }
 
 /**
