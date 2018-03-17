@@ -6,12 +6,18 @@ var markers = [];
 let mapInitialized = false;
 let restaurantsInitialized = false;
 let dbPromise;
+let observer;
 
 /**
  * Register service worker and fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   self.dbPromise = DBHelper.openDatabase();
+
+  if ('IntersectionObserver' in window) {
+    self.observer = new IntersectionObserver(onObserverChange);
+  }
+
   registerServiceworker();
   fetchRestaurants();
 });
@@ -24,6 +30,17 @@ registerServiceworker = () => {
 
   navigator.serviceWorker
      .register('../sw.js');
+}
+
+/**
+ * Event for observer to show images when they are visible in viewport.
+ */
+onObserverChange = (changes) => {
+  changes.forEach(change => {
+    change.target.src = change.target.getAttribute('data-src');
+    change.target.srcset = change.target.getAttribute('data-srcset');
+    self.observer.unobserve(change.target);
+  });
 }
 
 /**
@@ -114,7 +131,6 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
-
 
   if(restaurantsInitialized){
     addMarkersToMap();
@@ -239,27 +255,34 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
-
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
+  image.classList = 'restaurant-img';
   image.alt = `An image from ${restaurant.name}`;
 
   if(restaurant.photograph) {
-    image.src = DBHelper.imageUrlForRestaurant(restaurant);
-    image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`;
+    image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant));
+    image.setAttribute('data-srcset', `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`);
   }
   else {
-    image.src = '/img/image_missing.svg';
+    image.setAttribute('data-src', '/img/image_missing.svg');
+    image.setAttribute('data-srcset', '');
     image.alt = `No image`;
   }
 
   //If image not found, serve image missing picture
   image.onerror = (e) => { 
-    e.target.setAttribute('src', '/img/image_missing.svg');
-    e.target.setAttribute('srcset', '');
+    e.target.setAttribute('data-src', '/img/image_missing.svg');
+    e.target.setAttribute('data-srcset', '');
     e.target.alt = `No image`;
   };
-  
+
+  if(self.observer) {
+    self.observer.observe(image);
+  }
+  else {
+    image.src = image.getAttribute('data-src');
+    image.srcset = image.getAttribute('data-srcset');
+  }
 
   li.append(image);
 
@@ -281,9 +304,9 @@ createRestaurantHTML = (restaurant) => {
   more.setAttribute('aria-label', `View details of ${restaurant.name}`);
   more.href = DBHelper.urlForRestaurant(restaurant);
   more.setAttribute("tabindex", 0);
-  li.append(more)
+  li.append(more);
 
-  return li
+  return li;
 }
 
 /**
