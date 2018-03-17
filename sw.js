@@ -10,7 +10,8 @@ const allCacheNames = [
 
 const remoteCachePaths = [
   'https://maps.googleapis.com/maps/api/js?key=AIzaSyB14vP09l2oJojjzpXxQGAtcYHz5caC2IQ&libraries=places&callback=initMap', 
-  'https://maps.googleapis.com/maps-api'
+  'https://maps.googleapis.com/maps-api',
+  'https://fonts.gstatic.com'
   ];
 
 const OFFLINE_URL = 'offline.html';
@@ -31,12 +32,12 @@ self.addEventListener('install', event => {
         'restaurant.html',
         'offline.html',
         'manifest.webmanifest',
-        'img/icons/icon-128x128.png',
-        'img/icons/icon-144x144.png',
-        'img/icons/icon-152x152.png',
-        'img/icons/icon-192x192.png',
-        'img/icons/icon-256x256.png',
-        'img/icons/icon-512x512.png'
+        'icons/icon-128x128.png',
+        'icons/icon-144x144.png',
+        'icons/icon-152x152.png',
+        'icons/icon-192x192.png',
+        'icons/icon-256x256.png',
+        'icons/icon-512x512.png'
       ]);
     })
   );
@@ -47,7 +48,7 @@ self.addEventListener('install', event => {
  */
 self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
-
+  
   //Check if the request is matched in the remote caches list and put it in the cache if it is.
   for(const remoteCacheUrl of remoteCachePaths){
     if(event.request.url.startsWith(remoteCacheUrl)){
