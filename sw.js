@@ -1,12 +1,26 @@
 const staticCacheName = 'restaurant-review-v5';
+const remoteCacheName = 'restaurant-review-remotes';
+const imagesCacheName = 'restaurant-review-images';
+
+const allCacheNames = [
+  staticCacheName,
+  remoteCacheName,
+  imagesCacheName
+];
+
+const remoteCachePaths = [
+  'https://maps.googleapis.com/maps/api/js?key=AIzaSyB14vP09l2oJojjzpXxQGAtcYHz5caC2IQ&libraries=places&callback=initMap', 
+  'https://maps.googleapis.com/maps-api'
+  ];
+
 const OFFLINE_URL = 'offline.html';
 
 /**
  * Add installation event listener to service worker.
  */
-self.addEventListener('install', function(event) {
+self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(staticCacheName).then(function(cache) {
+    caches.open(staticCacheName).then(cache => {
       return cache.addAll([
         'css/styles.css',
         'js/idb.js',
@@ -31,9 +45,28 @@ self.addEventListener('install', function(event) {
 /**
  * Add fetch event listener to service worker.
  */
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
-  
+
+  //Check if the request is matched in the remote caches list and put it in the cache if it is.
+  for(const remoteCacheUrl of remoteCachePaths){
+    if(event.request.url.startsWith(remoteCacheUrl)){
+      return caches.open(remoteCacheName).then(cache => {
+        return cache.match(event.request).then(response => {
+          if (response) return response;
+
+          return fetch(event.request, {
+              mode: 'no-cors'
+            })
+            .then(networkResponse => {
+              cache.put(event.request, networkResponse.clone());
+              return networkResponse;
+            });
+        });
+      });
+    }
+  }
+
   if (requestUrl.origin === location.origin) {
     //If the requested page is restaurant.html, serve the empty restaurant info page
     if (requestUrl.pathname === '/restaurant.html') {
@@ -42,10 +75,25 @@ self.addEventListener('fetch', function(event) {
           return response || fetch(event.request);
       }));
     }
+
+    //Check if the path is for restaurant images and try to get them from cache if they are.
+    if(requestUrl.pathname.startsWith('/img/')){
+      return caches.open(imagesCacheName).then(cache => {
+        return cache.match(event.request).then(response => {
+          if (response) return response;
+
+          return fetch(event.request)
+            .then(imageResponse => {
+              cache.put(event.request, imageResponse.clone());
+              return imageResponse;
+            });
+        });
+      });
+    }
   }
 
   event.respondWith(
-    caches.match(event.request).then(function(response) {
+    caches.match(event.request).then(response => {
       return response || fetch(event.request).catch(error => {
         if (event.request.mode === 'navigate' ||
           (event.request.method === 'GET' &&
@@ -63,14 +111,14 @@ self.addEventListener('fetch', function(event) {
 /**
  * Add activate event listener to service worker.
  */
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.filter(function(cacheName) {
+        cacheNames.filter(cacheName => {
           return cacheName.startsWith('restaurant-review-') &&
-                 cacheName !== staticCacheName;
-        }).map(function(cacheName) {
+                 !allCacheNames.includes(cacheName);
+        }).map(cacheName => {
           return caches.delete(cacheName);
         })
       );
