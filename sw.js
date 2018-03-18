@@ -8,10 +8,11 @@ const allCacheNames = [
   imagesCacheName
 ];
 
-const remoteCachePaths = [
+const remoteCachePathPrefixes = [
   'https://maps.googleapis.com/maps/api/js?key=AIzaSyB14vP09l2oJojjzpXxQGAtcYHz5caC2IQ&libraries=places&callback=initMap', 
   'https://maps.googleapis.com/maps-api',
-  'https://fonts.gstatic.com'
+  'https://fonts.gstatic.com',
+  'https://maps.gstatic.com/mapfiles'
   ];
 
 const OFFLINE_URL = 'offline.html';
@@ -48,9 +49,9 @@ self.addEventListener('install', event => {
  */
 self.addEventListener('fetch', event => {
   const requestUrl = new URL(event.request.url);
-  
+
   //Check if the request is matched in the remote caches list and put it in the cache if it is.
-  for(const remoteCacheUrl of remoteCachePaths){
+  for(const remoteCacheUrl of remoteCachePathPrefixes){
     if(event.request.url.startsWith(remoteCacheUrl)){
       return caches.open(remoteCacheName).then(cache => {
         return cache.match(event.request).then(response => {
