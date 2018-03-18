@@ -37,9 +37,11 @@ registerServiceworker = () => {
  */
 onObserverChange = (changes) => {
   changes.forEach(change => {
-    change.target.src = change.target.getAttribute('data-src');
-    change.target.srcset = change.target.getAttribute('data-srcset');
-    self.observer.unobserve(change.target);
+    if(change.isIntersecting){
+      change.target.src = change.target.getAttribute('data-src');
+      change.target.srcset = change.target.getAttribute('data-srcset');
+      self.observer.unobserve(change.target);
+    }
   });
 }
 
