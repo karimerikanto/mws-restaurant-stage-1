@@ -111,13 +111,13 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`;
   }
   else {
-    image.src = '/img/image_missing.svg';
+    image.src = '/image_missing.svg';
     image.alt = `No image`;
   }
 
   //If image not found, serve image missing picture
   image.onerror = (e) => { 
-    e.target.setAttribute('src', '/img/image_missing.svg');
+    e.target.setAttribute('src', '/image_missing.svg');
     e.target.setAttribute('srcset', '');
     e.target.alt = `No image`;
   };

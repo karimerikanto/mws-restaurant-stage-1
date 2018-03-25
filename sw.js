@@ -38,7 +38,8 @@ self.addEventListener('install', event => {
         'icons/icon-152x152.png',
         'icons/icon-192x192.png',
         'icons/icon-256x256.png',
-        'icons/icon-512x512.png'
+        'icons/icon-512x512.png',
+        'image_missing.svg'
       ]);
     })
   );

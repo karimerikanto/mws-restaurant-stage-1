@@ -269,15 +269,15 @@ createRestaurantHTML = (restaurant) => {
       image.setAttribute('data-srcset', `${DBHelper.imageUrlForRestaurant(restaurant)}, ${DBHelper.imageUrlForRestaurant(restaurant).replace('.', '_large.')} 1.5x`);
     }
     else {
-      image.setAttribute('data-src', '/img/image_missing.svg');
+      image.setAttribute('data-src', '/image_missing.svg');
       image.setAttribute('data-srcset', '');
       image.alt = `No image`;
     }
 
     //If image not found, serve image missing picture
     image.onerror = (e) => { 
-      e.target.setAttribute('data-src', '/img/image_missing.svg');
-      e.target.setAttribute('data-srcset', '');
+      e.target.src = '/image_missing.svg';
+      e.target.srcset = '';
       e.target.alt = `No image`;
     };
 
