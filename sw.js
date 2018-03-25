@@ -15,8 +15,6 @@ const remoteCachePathPrefixes = [
   'https://maps.gstatic.com/mapfiles'
   ];
 
-const OFFLINE_URL = 'offline.html';
-
 /**
  * Add installation event listener to service worker.
  */
@@ -31,7 +29,6 @@ self.addEventListener('install', event => {
         'js/restaurant_info.js',
         '/',
         'restaurant.html',
-        'offline.html',
         'manifest.webmanifest',
         'icons/icon-128x128.png',
         'icons/icon-144x144.png',
@@ -98,13 +95,6 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
       return response || fetch(event.request).catch(error => {
-        if (event.request.mode === 'navigate' ||
-          (event.request.method === 'GET' &&
-           event.request.headers.get('accept').includes('text/html'))) {
-            //If we fail to request a html page, then we will serve the offline page.
-            return caches.match(OFFLINE_URL);
-          }
-
           return error;
       });
     })
