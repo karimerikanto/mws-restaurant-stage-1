@@ -149,6 +149,16 @@ nav a {
   width: 200px;
 }
 
+#favorites-checkbox-label {
+  font-family: Arial,sans-serif;
+  color: #fff;
+  font-size: 13pt;
+}
+
+#favorites-container {
+  margin: 10px;
+}
+
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
   background-color: #f3f3f3;

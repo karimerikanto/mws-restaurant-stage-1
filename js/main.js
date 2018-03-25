@@ -186,20 +186,22 @@ updateRestaurants = (restaurants) => {
 
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
+  const nCheckboxFavorite = document.getElementById('favorites-checkbox');
 
   const cIndex = cSelect.selectedIndex;
   const nIndex = nSelect.selectedIndex;
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
-  
+  const showOnlyFavoritesChecked = nCheckboxFavorite.checked;
+
   self.restaurants = restaurants;
 
   if(!filtersInitialized()) {
     initializeFilters();
   }
 
-  restaurants = filterRestaurants(restaurants, cuisine, neighborhood);
+  restaurants = filterRestaurants(restaurants, cuisine, neighborhood, showOnlyFavoritesChecked);
 
   resetRestaurants(restaurants);
   fillRestaurantsHTML();
@@ -214,13 +216,17 @@ updateRestaurants = (restaurants) => {
 /**
  * Filter restaurants by cuisine type and/or neighborhood.
  */
-filterRestaurants = (restaurants, cuisine, neighborhood) => {
+filterRestaurants = (restaurants, cuisine, neighborhood, showOnlyFavorites) => {
   if(cuisine != 'all'){
     restaurants = restaurants.filter(r => r.cuisine_type == cuisine);
   }
 
   if(neighborhood != 'all'){
     restaurants = restaurants.filter(r => r.neighborhood == neighborhood);
+  }
+
+  if(showOnlyFavorites){
+    restaurants = restaurants.filter(r => r.is_favorite);
   }
 
   return restaurants;

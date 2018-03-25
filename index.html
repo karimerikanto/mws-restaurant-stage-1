@@ -31,6 +31,10 @@
         <select id="cuisines-select" tabindex="0" name="cuisines" onchange="fetchRestaurants()" aria-label="Cuisines">
           <option value="all">All Cuisines</option>
         </select>
+        <div id="favorites-container">
+          <input type="checkbox" id="favorites-checkbox" tabindex="0" onchange="fetchRestaurants()" />
+          <label id="favorites-checkbox-label" for="favorites-checkbox">Show only favorite restaurants</label>
+        </div>
       </div>
     </section>
     <section id="restaraunts-container">
