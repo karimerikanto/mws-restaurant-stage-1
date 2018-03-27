@@ -363,7 +363,8 @@ toggleRestaurantFavoriteState = (restaurant, image) => {
         Snackbar.showMessage(
           restaurant.is_favorite === 'true' ? 
             'Restaurant added as a favorite restaurant' : 
-            'Removed restaurant from the favorite restaurants');
+            'Removed restaurant from the favorite restaurants',
+          'success');
 
         image.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
 
