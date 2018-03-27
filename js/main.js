@@ -226,7 +226,7 @@ filterRestaurants = (restaurants, cuisine, neighborhood, showOnlyFavorites) => {
   }
 
   if(showOnlyFavorites){
-    restaurants = restaurants.filter(r => r.is_favorite);
+    restaurants = restaurants.filter(r => r.is_favorite === 'true');
   }
 
   return restaurants;
@@ -298,8 +298,10 @@ createRestaurantHTML = (restaurant) => {
     li.append(image);
 
     const name = document.createElement('h2');
+    name.classList = 'restaurant-name';
     name.innerHTML = restaurant.name;
     name.setAttribute("tabindex", 0);
+
     li.append(name);
 
     const neighborhood = document.createElement('p');
@@ -310,15 +312,54 @@ createRestaurantHTML = (restaurant) => {
     address.innerHTML = restaurant.address;
     li.append(address);
 
+    const container = document.createElement('div');
+
     const more = document.createElement('a');
     more.innerHTML = 'View Details';
     more.setAttribute('aria-label', `View details of ${restaurant.name}`);
     more.href = DBHelper.urlForRestaurant(restaurant);
-    more.setAttribute("tabindex", 0);
-    li.append(more)
+    more.setAttribute('tabindex', 0);
+
+    container.append(more);
+
+    const favorite = document.createElement('input');
+    favorite.classList = 'restaurant-favorite';
+    favorite.alt = 'Toggle favorite restaurant';
+    favorite.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
+    favorite.setAttribute('tabindex', 0);
+    favorite.setAttribute('type', 'button');
+    favorite.setAttribute('aria-label', restaurant.is_favorite === 'true' ? 'Mark restaurant as a favorite restaurant' : 'Remove restaurant from the favorite restaurants');
+    favorite.onclick = () => toggleRestaurantFavoriteState(restaurant, favorite);
+
+    container.append(favorite);
+
+    li.append(container);
 
     resolve(li);
   });
+}
+
+/**
+ * Toggle restaurant favorite state and refresh the restaurants.
+ */
+toggleRestaurantFavoriteState = (restaurant, image) => {
+  DBHelper.updateRestaurantFavoriteState(restaurant.id, !(restaurant.is_favorite === 'true'), (error, response) => {
+      if (error) {
+        console.error(error);
+      } 
+      else {
+        restaurant.is_favorite = restaurant.is_favorite === 'true' ? 'false' : 'true';
+
+        DBHelper.saveRestaurantToLocalDb(restaurant, self.dbPromise, (error, message) => {
+          if (error) {
+            console.error(error);
+          }
+        });
+
+        image.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
+        image.setAttribute("aria-label", restaurant.is_favorite === 'true' ? 'Remove restaurant from the favorite restaurants' : 'Mark restaurant as a favorite restaurant');
+      }
+    });
 }
 
 /**

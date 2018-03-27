@@ -98,6 +98,11 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  const favorite = document.getElementById('restaurant-favorite');
+  favorite.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
+  favorite.setAttribute("aria-label", restaurant.is_favorite === 'true' ? 'Remove this restaurant from the favorite restaurants' : 'Mark this restaurant as a favorite restaurant');
+  favorite.onclick = () => toggleRestaurantFavoriteState(restaurant, favorite);
+
   const address = document.getElementById('restaurant-address');
   address.setAttribute('tabindex', 0);
   address.innerHTML = restaurant.address;
@@ -220,6 +225,29 @@ fillBreadcrumb = (restaurant=self.restaurant) => {
   const li = document.createElement('li');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
+}
+
+/**
+ * Toggle restaurant favorite state and refresh the restaurants.
+ */
+toggleRestaurantFavoriteState = (restaurant, image) => {
+  DBHelper.updateRestaurantFavoriteState(restaurant.id, !(restaurant.is_favorite === 'true'), (error, response) => {
+      if (error) {
+        console.error(error);
+      } 
+      else {
+        restaurant.is_favorite = restaurant.is_favorite === 'true' ? 'false' : 'true';
+
+        DBHelper.saveRestaurantToLocalDb(restaurant, self.dbPromise, (error, message) => {
+          if (error) {
+            console.error(error);
+          }
+        });
+
+        image.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
+        image.setAttribute("aria-label", restaurant.is_favorite === 'true' ? 'Mark this restaurant as a favorite restaurant' : 'Remove this restaurant from the favorite restaurants');
+      }
+    });
 }
 
 /**

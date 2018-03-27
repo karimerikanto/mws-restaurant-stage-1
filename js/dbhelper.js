@@ -73,6 +73,22 @@ class DBHelper {
   }
 
   /**
+   * Save restaurant to the local storage.
+   */
+  static saveRestaurantToLocalDb(restaurant, dbPromise, callback) {
+    if(dbPromise === null) return;
+
+    return dbPromise.then(db => {
+      const tx = db.transaction('restaurants', 'readwrite');
+      const restaurantsStore = tx.objectStore('restaurants');
+      restaurantsStore.put(restaurant);
+
+      return tx.complete;
+    })
+    .catch(e => callback(e, `Save to local database failed.`));
+  }
+
+  /**
    * Fetch all restaurants from the remote server.
    */
   static fetchRestaurants(callback) {
@@ -92,6 +108,17 @@ class DBHelper {
       .then(response => response.json())
       .then(restaurantDataAsJson => callback(null, restaurantDataAsJson))
       .catch(e => callback(e, `Error when fetching restaurant from the remote server.`));
+  }
+
+  /**
+   * Update restaurant state to the remote server.
+   */
+  static updateRestaurantFavoriteState(id, isFavorite, callback) {
+    fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=${isFavorite}`, {
+      method: 'PUT'
+    })
+      .then(response => callback(null, response))
+      .catch(e => callback(e, `Error when updating favorite state to the remote server.`));
   }
 
   /**
