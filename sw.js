@@ -26,6 +26,7 @@ self.addEventListener('install', event => {
         'js/idb.js',
         'js/main.js',
         'js/dbhelper.js',
+        'js/snackbar.js',
         'js/restaurant_info.js',
         '/',
         'restaurant.html',

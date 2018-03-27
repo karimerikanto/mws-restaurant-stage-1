@@ -100,7 +100,11 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
 
   const favorite = document.getElementById('restaurant-favorite');
   favorite.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
-  favorite.setAttribute("aria-label", restaurant.is_favorite === 'true' ? 'Remove this restaurant from the favorite restaurants' : 'Mark this restaurant as a favorite restaurant');
+  favorite.setAttribute("aria-label", 
+    restaurant.is_favorite === 'true' ? 
+      'Remove this restaurant from the favorite restaurants' : 
+      'Mark this restaurant as a favorite restaurant');
+  
   favorite.onclick = () => toggleRestaurantFavoriteState(restaurant, favorite);
 
   const address = document.getElementById('restaurant-address');
@@ -244,8 +248,17 @@ toggleRestaurantFavoriteState = (restaurant, image) => {
           }
         });
 
+        Snackbar.showMessage(
+          restaurant.is_favorite === 'true' ? 
+            'Restaurant added as a favorite restaurant' : 
+            'Removed restaurant from the favorite restaurants');
+
         image.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
-        image.setAttribute("aria-label", restaurant.is_favorite === 'true' ? 'Mark this restaurant as a favorite restaurant' : 'Remove this restaurant from the favorite restaurants');
+
+        image.setAttribute("aria-label", 
+          restaurant.is_favorite === 'true' ? 
+            'Remove this restaurant from the favorite restaurants' : 
+            'Mark this restaurant as a favorite restaurant');
       }
     });
 }

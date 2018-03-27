@@ -327,8 +327,12 @@ createRestaurantHTML = (restaurant) => {
     favorite.alt = 'Toggle favorite restaurant';
     favorite.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
     favorite.setAttribute('tabindex', 0);
-    favorite.setAttribute('type', 'button');
-    favorite.setAttribute('aria-label', restaurant.is_favorite === 'true' ? 'Mark restaurant as a favorite restaurant' : 'Remove restaurant from the favorite restaurants');
+    favorite.setAttribute('type', 'image');
+    favorite.setAttribute('aria-label', 
+      restaurant.is_favorite === 'true' ? 
+        'Mark restaurant as a favorite restaurant' : 
+        'Remove restaurant from the favorite restaurants');
+    
     favorite.onclick = () => toggleRestaurantFavoriteState(restaurant, favorite);
 
     container.append(favorite);
@@ -356,8 +360,17 @@ toggleRestaurantFavoriteState = (restaurant, image) => {
           }
         });
 
+        Snackbar.showMessage(
+          restaurant.is_favorite === 'true' ? 
+            'Restaurant added as a favorite restaurant' : 
+            'Removed restaurant from the favorite restaurants');
+
         image.src = restaurant.is_favorite === 'true' ? 'favorite_on.svg' : 'favorite_off.svg';
-        image.setAttribute("aria-label", restaurant.is_favorite === 'true' ? 'Remove restaurant from the favorite restaurants' : 'Mark restaurant as a favorite restaurant');
+
+        image.setAttribute("aria-label", 
+          restaurant.is_favorite === 'true' ? 
+            'Mark restaurant as a favorite restaurant' : 
+            'Remove restaurant from the favorite restaurants');
       }
     });
 }
