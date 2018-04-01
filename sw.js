@@ -1,4 +1,4 @@
-const staticCacheName = 'restaurant-review-v5';
+const staticCacheName = 'restaurant-review-v6';
 const remoteCacheName = 'restaurant-review-remotes';
 const imagesCacheName = 'restaurant-review-images';
 
@@ -22,11 +22,8 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
       return cache.addAll([
-        'css/styles.css',
-        'js/idb.js',
+        'css/styles.min.css',
         'js/main.js',
-        'js/dbhelper.js',
-        'js/snackbar.js',
         'js/restaurant_info.js',
         '/',
         'restaurant.html',
