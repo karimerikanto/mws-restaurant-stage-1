@@ -1,11 +1,15 @@
 let restaurant;
 var map;
 let dbPromise;
+let snackbar;
+
 /**
  * Register service as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   self.dbPromise = DBHelper.openDatabase();
+  self.snackbar = new Snackbar();
+
   registerServiceworker();
 });
 
@@ -248,7 +252,7 @@ const toggleRestaurantFavoriteState = (restaurant, image) => {
           }
         });
 
-        Snackbar.showMessage(
+        snackbar.queueMessage(
           restaurant.is_favorite === 'true' ? 
             'Restaurant added as a favorite restaurant' : 
             'Removed restaurant from the favorite restaurants',

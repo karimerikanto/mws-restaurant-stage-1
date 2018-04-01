@@ -1,18 +1,20 @@
 let restaurants,
   neighborhoods,
   cuisines;
-var map;
-var markers = [];
+let map;
+let markers = [];
 let mapInitialized = false;
 let restaurantsInitialized = false;
 let dbPromise;
 let observer;
+let snackbar;
 
 /**
  * Register service worker and fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   self.dbPromise = DBHelper.openDatabase();
+  self.snackbar = new Snackbar();
 
   if ('IntersectionObserver' in window) {
     self.observer = new IntersectionObserver(onObserverChange);
@@ -360,7 +362,7 @@ const toggleRestaurantFavoriteState = (restaurant, image) => {
           }
         });
 
-        Snackbar.showMessage(
+        snackbar.queueMessage(
           restaurant.is_favorite === 'true' ? 
             'Restaurant added as a favorite restaurant' : 
             'Removed restaurant from the favorite restaurants',
