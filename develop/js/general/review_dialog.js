@@ -10,8 +10,8 @@ class AddReviewDialog {
 		this.nameField = document.getElementById('add-review-name');
 		this.ratingFields = document.getElementsByClassName('add-review-radio');
 		this.commentField = document.getElementById('add-review-comment');
-		this.currentFocusIndex = 1;
-		this.focusIndexOnOpen = 1;
+		this.currentFocusIndex = 2;
+		this.focusIndexOnOpen = 2;
 	}
 
 	/**
