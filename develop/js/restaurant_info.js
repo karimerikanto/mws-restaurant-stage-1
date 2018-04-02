@@ -1,7 +1,8 @@
 let restaurant;
-var map;
+let map;
 let dbPromise;
 let snackbar;
+let addReviewDialog;
 
 /**
  * Register service as soon as the page is loaded.
@@ -9,6 +10,7 @@ let snackbar;
 document.addEventListener('DOMContentLoaded', (event) => {
   self.dbPromise = DBHelper.openDatabase();
   self.snackbar = new Snackbar();
+  self.addReviewDialog = new AddReviewDialog();
 
   registerServiceworker();
 });
@@ -183,7 +185,7 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   addReviewBtn.setAttribute('type', 'button');
   addReviewBtn.setAttribute('value', 'Add review');
   addReviewBtn.onclick = showAddReviewDialog;
-  
+
   container.appendChild(addReviewBtn);
 
   if (!reviews) {
@@ -279,11 +281,54 @@ const toggleRestaurantFavoriteState = (restaurant, image) => {
 }
 
 /**
- * Shows the dialog which can be used to add new revies.
+ * Show dialog.
  */
 const showAddReviewDialog = () => {
-  alert('test');
+  self.addReviewDialog.show();
 }
+
+/**
+ * Close dialog.
+ */
+const closeAddReviewDialog = () => {
+  self.addReviewDialog.close();
+}
+
+/**
+ * Submit new review.
+ */
+const submitNewReview = () => {
+  const errorMessage = self.addReviewDialog.submit();
+
+  if(errorMessage.length > 0){
+    snackbar.queueMessage(errorMessage, 'error');
+    return;
+  }
+
+  
+
+  //TODO: Add new review to local storage
+
+  self.addReviewDialog.close();
+}
+
+/**
+ * Catch onclick events and pass them to the dialog class.
+ */
+window.onclick = (e) => {
+  if(self.addReviewDialog !== undefined){
+    self.addReviewDialog.handleClick(e);
+  }
+}
+
+/**
+ * Catch keydown events and pass them to the dialog class.
+ */
+window.addEventListener('keydown', (e) => {
+  if(self.addReviewDialog !== undefined){
+    self.addReviewDialog.handleKeyDown(e);
+  }
+});
 
 /**
  * Get a parameter by name from page URL.

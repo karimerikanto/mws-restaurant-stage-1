@@ -1,5 +1,5 @@
 /**
- * Snackbar functions.
+ * Snackbar.
  */
 class Snackbar {
 	constructor() {

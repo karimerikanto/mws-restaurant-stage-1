@@ -64,7 +64,31 @@
   </footer>
   <!-- End footer -->
 
+  <!-- Beginning snackbar -->
   <div id="snackbar" role="polite" aria-live="assertive"></div>
+  <!-- End snackbar -->
+  
+  <!-- Beginning create review dialog -->
+  <div id="addReviewDialog" class="modal" aria-modal="true">
+    <div class="modal-content">
+      <input type="button" class="modal-close" aria-label="Close dialog" onclick="closeAddReviewDialog()" tabindex="0" value="&times;"></input>
+      <h2 class="add-review-title" tabindex="0">Add new review</h2>
+      <p class="add-review-subtitle">Name</p>
+      <input class="add-review-input" id="add-review-name" type="text" aria-label="Name" tabindex="0"></input>
+      <p class="add-review-subtitle">Rating</p>
+      <fieldset id="add-review-rating" class="add-review-fieldset">
+          <input type="radio" value="1" class="add-review-radio" name="add-review-rating" tabindex="0" aria-label="Set rating 1 of 5">1</input>
+          <input type="radio" value="2" class="add-review-radio" name="add-review-rating" tabindex="0" aria-label="Set rating 2 of 5">2</input>
+          <input type="radio" value="3" class="add-review-radio" name="add-review-rating" tabindex="0" aria-label="Set rating 3 of 5">3</input>
+          <input type="radio" value="4" class="add-review-radio" name="add-review-rating" tabindex="0" aria-label="Set rating 4 of 5">4</input>
+          <input type="radio" value="5" class="add-review-radio" name="add-review-rating" tabindex="0" aria-label="Set rating 5 of 5">5</input>
+      </fieldset>
+      <p class="add-review-subtitle">Comments</p>
+      <textarea class="add-review-textarea" id="add-review-comment" aria-label="Comments" tabindex="0"></textarea>
+      <input type="button" id="add-review-submit-button" value="Submit" onclick="submitNewReview()" tabindex="0"></input>
+    </div>
+  </div>
+  <!-- End create review dialog -->
 
   <!-- Beginning scripts -->
   <!-- Main javascript file -->
