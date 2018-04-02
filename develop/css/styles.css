@@ -102,7 +102,7 @@ nav a {
 
 /* Add a color to all links inside the list */
 #breadcrumb li a {
-    color: #0275d8;
+    color: #014eb1;
     text-decoration: none;
 }
 
@@ -169,7 +169,7 @@ nav a {
 }
 .filter-options {
   width: calc(100% - 20px);
-  background-color: #3397DB;
+  background-color: #0b5bc2;
   align-items: center;
   padding: 12px 10px;
 }
@@ -246,7 +246,7 @@ nav a {
   }
 }
 #restaurants-list li a {
-  background-color: #e68a00;
+  background-color: #b15101;
   border-bottom: 3px solid #eee;
   color: #fff;
   display: inline-block;
@@ -258,7 +258,7 @@ nav a {
 }
 .restaurant-name {
   font-size: 14pt;
-  color: #e68a00;
+  color: #b15101;
   font-family: Arial,sans-serif;
   font-weight: 200;
   letter-spacing: 0;
@@ -301,7 +301,7 @@ nav a {
   width: 100%;
 }
 #restaurant-name {
-  color: #e68a00;
+  color: #b15101;
   font-family: Arial,sans-serif;
   font-size: 20pt;
   display: inline-block;
@@ -361,7 +361,7 @@ nav a {
   }
 }
 #reviews-container h2 {
-  color: #e68a00;
+  color: #b15101;
   font-size: 24pt;
   font-weight: 300;
   letter-spacing: -1px;
@@ -403,26 +403,6 @@ nav a {
 #restaurant-hours td {
   color: #444;
   padding: 3px 10px;
-}
-/* ====================== Offline page ====================== */
-#offline-container {
-  text-align: center;
-}
-#offline-container p {
-  font-size: 14pt;
-  padding: 20px;
-}
-#offline-container a {
-  background-color: #e68a00;
-  border-bottom: 3px solid #eee;
-  color: #fff;
-  display: inline-block;
-  font-size: 10pt;
-  padding: 8px 30px 10px;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  margin: 20px;
 }
 .screenreader {
   position: absolute;
