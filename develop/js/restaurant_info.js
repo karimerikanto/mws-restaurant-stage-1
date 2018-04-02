@@ -242,6 +242,7 @@ const toggleRestaurantFavoriteState = (restaurant, image) => {
   DBHelper.updateRestaurantFavoriteState(restaurant.id, !(restaurant.is_favorite === 'true'), (error, response) => {
       if (error) {
         console.error(error);
+        snackbar.queueMessage('Failed to change restaurant\'s favorite state', 'error');
       } 
       else {
         restaurant.is_favorite = restaurant.is_favorite === 'true' ? 'false' : 'true';
