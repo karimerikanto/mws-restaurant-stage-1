@@ -367,6 +367,17 @@ nav a {
   letter-spacing: -1px;
   padding-bottom: 1pt;
 }
+#add-review-button {
+  background-color: #b15101;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
 #reviews-list {
   margin: 0;
   padding: 0;

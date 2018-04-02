@@ -174,8 +174,17 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
-  title.setAttribute("tabindex", 0);
+  title.setAttribute('tabindex', 0);
   container.appendChild(title);
+
+  const addReviewBtn = document.createElement('input');
+  addReviewBtn.id = 'add-review-button';
+  addReviewBtn.setAttribute('tabindex', 0);
+  addReviewBtn.setAttribute('type', 'button');
+  addReviewBtn.setAttribute('value', 'Add review');
+  addReviewBtn.onclick = showAddReviewDialog;
+  
+  container.appendChild(addReviewBtn);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -267,6 +276,13 @@ const toggleRestaurantFavoriteState = (restaurant, image) => {
             'Mark this restaurant as a favorite restaurant');
       }
     });
+}
+
+/**
+ * Shows the dialog which can be used to add new revies.
+ */
+const showAddReviewDialog = () => {
+  alert('test');
 }
 
 /**
