@@ -15,10 +15,18 @@ class DBHelper {
    * Opens the local storage database and returns a promise from it.
    */
   static openDatabase() {
-    return idb.open('restaurant-reviews', 1, function(upgradeDb) {
-      upgradeDb.createObjectStore('restaurants', {
-        keyPath: 'id'
-      });
+    return idb.open('restaurant-reviews', 2, function(upgradeDb) {
+      switch(upgradeDb.oldVersion) {
+        case 0:
+          upgradeDb.createObjectStore('restaurants', {
+            keyPath: 'id'
+          });
+        case 1:
+          upgradeDb.createObjectStore('reviews', {
+            keyPath: 'id',
+            autoIncrement: true
+          });
+      }
     });
   }
 
@@ -82,6 +90,22 @@ class DBHelper {
       const tx = db.transaction('restaurants', 'readwrite');
       const restaurantsStore = tx.objectStore('restaurants');
       restaurantsStore.put(restaurant);
+
+      return tx.complete;
+    })
+    .catch(e => callback(e, `Save to local database failed.`));
+  }
+
+  /**
+   * Save review to the local storage.
+   */
+  static saveReviewToLocalDb(review, dbPromise, callback) {
+    if(dbPromise === null) return;
+
+    return dbPromise.then(db => {
+      const tx = db.transaction('reviews', 'readwrite');
+      const reviewsStore = tx.objectStore('reviews');
+      reviewsStore.put(review);
 
       return tx.complete;
     })

@@ -296,9 +296,21 @@ const submitNewReview = (error, review) => {
     return;
   }
 
-  console.log(review);
+  if (!self.restaurant) { 
+    console.error('Restaurant is not set!');
+    return;
+  }
 
-  //TODO: Add new review to local storage
+  review.restaurant_id = self.restaurant.id;
+
+  DBHelper.saveReviewToLocalDb(review, self.dbPromise, (error, message) => {
+    if (error) {
+      snackbar.queueMessage('An error happened while saving a new review', 'error');
+      return;
+    }
+
+    //TODO: Start sending unsent reviews
+  });
 
   self.addReviewDialog.close();
 }
