@@ -2,16 +2,127 @@
  * Review dialog.
  */
 class AddReviewDialog {
-	constructor() {
-		this.dialog = document.getElementById('addReviewDialog');
-		this.focusableElements = this.dialog.querySelectorAll('[tabindex="0"]');
+	constructor(submitCallback) {
+		this.submitCallback = submitCallback;
+		this.focusableElements = [];
+		this.ratingFields = [];
 		this.lastFocusedElementBeforeOpen = null;
+		this.currentFocusIndex = 1;
+		this.focusIndexOnOpen = 1;
 
-		this.nameField = document.getElementById('add-review-name');
-		this.ratingFields = document.getElementsByClassName('add-review-radio');
-		this.commentField = document.getElementById('add-review-comment');
-		this.currentFocusIndex = 2;
-		this.focusIndexOnOpen = 2;
+		this.createContents();
+	}
+
+	/**
+	* Create dialog contents.
+	*/
+	createContents() {
+		//Dialog
+  		this.dialog = document.createElement('div');
+  		this.dialog.className = 'modal';
+  		this.dialog.setAttribute('aria-modal', 'true');
+
+  		//Content holder
+  		const content = document.createElement('div');
+  		content.className = 'modal-content';
+
+  		//Close button
+  		const closeButton = document.createElement('input');
+  		closeButton.className = 'modal-close';
+  		closeButton.setAttribute('type', 'button');
+  		closeButton.setAttribute('aria-label', 'Close dialog');
+  		closeButton.value = '×';
+  		closeButton.onclick = () => this.close();
+
+  		content.append(closeButton);
+  		this.focusableElements.push(closeButton);
+
+  		//Title
+  		const title = document.createElement('h3');
+  		title.className = 'add-review-title';
+  		title.innerHTML = 'Add new review';
+
+  		content.append(title);
+
+  		//Name label
+  		const nameLabel = document.createElement('p');
+  		nameLabel.className = 'add-review-subtitle';
+  		nameLabel.innerHTML = 'Name';
+  		
+  		content.append(nameLabel);
+
+  		//Name field
+  		this.nameField = document.createElement('input');
+  		this.nameField.className = 'add-review-input';
+  		this.nameField.setAttribute('type', 'text');
+  		this.nameField.setAttribute('aria-label', 'Name');
+  		
+  		content.append(this.nameField);
+  		this.focusableElements.push(this.nameField);
+
+  		//Rating label
+  		const ratingLabel = document.createElement('p');
+  		ratingLabel.className = 'add-review-subtitle';
+  		ratingLabel.innerHTML = 'Rating';
+  		
+  		content.append(ratingLabel);
+
+  		//Rating fieldset
+  		const ratingFieldSet = document.createElement('fieldset');
+  		ratingFieldSet.className = 'add-review-fieldset';
+  		ratingFieldSet.id = 'add-review-rating';
+
+  		//Rating radio buttons
+  		for(let i = 1; i <= 5; i++){
+  			const radioButton = document.createElement('input');
+  			radioButton.setAttribute('type', 'radio');
+  			radioButton.value = i;
+  			radioButton.id = `review-rating-${i}`;
+  			radioButton.className = 'add-review-radio';
+  			radioButton.name = 'add-review-rating';
+  			radioButton.setAttribute('aria-label', `Set rating ${i} of 5`);
+
+  			const radioButtonLabel = document.createElement('label');
+  			radioButtonLabel.setAttribute('for', `review-rating-${i}`);
+  			radioButtonLabel.innerHTML = i;
+
+  			this.ratingFields.push(radioButton);
+  			ratingFieldSet.append(radioButton);
+  			ratingFieldSet.append(radioButtonLabel);
+  			this.focusableElements.push(radioButton);
+  		}
+  		
+  		content.append(ratingFieldSet);
+
+  		//Comment label
+  		const commentLabel = document.createElement('p');
+  		commentLabel.className = 'add-review-subtitle';
+  		commentLabel.innerHTML = 'Comments';
+  		
+  		content.append(commentLabel);
+
+  		//Comment field
+  		this.commentField = document.createElement('textarea');
+  		this.commentField.className = 'add-review-textarea';
+  		this.commentField.setAttribute('aria-label', 'Comments');
+  		
+  		content.append(this.commentField);
+  		this.focusableElements.push(this.commentField);
+
+  		//Submit button
+  		const submitButton = document.createElement('input');
+  		submitButton.value = 'Submit';
+  		submitButton.className = 'add-review-submit-button';
+  		submitButton.setAttribute('type', 'button');
+  		submitButton.setAttribute('aria-label', 'Submit rating');
+  		submitButton.onclick = () => this.submitToCallback();
+
+  		content.append(submitButton);
+  		this.focusableElements.push(submitButton);
+
+  		this.dialog.append(content);
+
+  		document.body.append(this.dialog);
 	}
 
 	/**
@@ -76,16 +187,21 @@ class AddReviewDialog {
 	}
 
 	/**
-	* Submit dialog
+	* Submit dialog to the callback function.
 	*/
-	submit () {
-		const errorMessage = this.validateFields();
+	submitToCallback () {
+		const error = this.validateFields();
 
-		if(errorMessage.length > 0){
-			return errorMessage;
+		if(error.length > 0){
+			this.submitCallback(error, null);
+			return;
 		}
 
-		return '';
+		this.submitCallback(null, {
+			name: this.getNameValue(),
+			rating: this.getRatingValue(),
+			comment: this.getCommentValue()
+		})
 	}
 
 	/**

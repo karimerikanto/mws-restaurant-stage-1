@@ -10,7 +10,7 @@ let addReviewDialog;
 document.addEventListener('DOMContentLoaded', (event) => {
   self.dbPromise = DBHelper.openDatabase();
   self.snackbar = new Snackbar();
-  self.addReviewDialog = new AddReviewDialog();
+  self.addReviewDialog = new AddReviewDialog((error, review) => submitNewReview(error, review));
 
   registerServiceworker();
 });
@@ -288,24 +288,15 @@ const showAddReviewDialog = () => {
 }
 
 /**
- * Close dialog.
- */
-const closeAddReviewDialog = () => {
-  self.addReviewDialog.close();
-}
-
-/**
  * Submit new review.
  */
-const submitNewReview = () => {
-  const errorMessage = self.addReviewDialog.submit();
-
-  if(errorMessage.length > 0){
-    snackbar.queueMessage(errorMessage, 'error');
+const submitNewReview = (error, review) => {
+  if(error !== null){
+    snackbar.queueMessage(error, 'error');
     return;
   }
 
-  
+  console.log(review);
 
   //TODO: Add new review to local storage
 

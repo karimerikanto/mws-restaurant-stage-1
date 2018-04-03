@@ -367,7 +367,6 @@ nav a {
   letter-spacing: -1px;
   padding-bottom: 1pt;
 }
-#add-review-submit-button,
 #add-review-button {
   background-color: #b15101;
   color: #fff;
@@ -504,4 +503,14 @@ nav a {
   font-family: Arial,sans-serif;
   font-size: 16pt;
   margin: 0 10px;
+}
+.add-review-submit-button {
+  background-color: #b15101;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
 }

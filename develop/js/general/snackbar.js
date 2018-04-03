@@ -4,6 +4,18 @@
 class Snackbar {
 	constructor() {
 		this.messageArray = [];
+		this.createContents();
+	}
+
+	/**
+	* Create snackbar contents.
+	*/
+	createContents() {
+		this.snackbar = document.createElement('div');
+		this.snackbar.id = 'snackbar';
+		this.snackbar.setAttribute('aria-live', 'polite');
+
+		document.body.append(this.snackbar);
 	}
 
 	/**
@@ -25,21 +37,17 @@ class Snackbar {
 	* Show snackbar message.
 	*/
 	showMessage (text, style) {
-		var snackbar = document.getElementById('snackbar');
-
-		if(snackbar === null) return;
-
-		snackbar.className = 'show';
-		snackbar.innerHTML = text;
+		this.snackbar.className = 'show';
+		this.snackbar.innerHTML = text;
 		
 		if(style === 'success'){
-			snackbar.style.backgroundColor = '#00802b';
+			this.snackbar.style.backgroundColor = '#00802b';
 		}
 		else if(style === 'error'){
-			snackbar.style.backgroundColor ='#900';
+			this.snackbar.style.backgroundColor ='#900';
 		}
 		else{
-			snackbar.style.backgroundColor ='#333';
+			this.snackbar.style.backgroundColor ='#333';
 		}
 
 		setTimeout(() => { 
@@ -50,7 +58,7 @@ class Snackbar {
 				this.showMessage(message.text, message.style);
 			}
 			else {
-				snackbar.className = snackbar.className.replace('show', ''); 
+				this.snackbar.className = this.snackbar.className.replace('show', ''); 
 			}
 		}, 2000);
 	}
