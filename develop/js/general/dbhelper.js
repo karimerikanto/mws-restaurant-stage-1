@@ -47,6 +47,22 @@ class DBHelper {
   }
 
   /**
+   * Fetch all reviews from local storage.
+   */
+  static fetchLocalDbReviews(dbPromise, callback) {
+    if(dbPromise === null) return;
+
+    return dbPromise.then(db => {
+      const tx = db.transaction('reviews', 'readonly');
+      const reviewsStore = tx.objectStore('reviews');
+      return reviewsStore.getAll();
+    }).then(reviews => {
+        callback(null, reviews);
+    })
+    .catch(e => callback(e, `Fetch from local database failed.`));
+  }
+
+  /**
    * Fetch restaurant from local storage.
    */
   static fetchLocalDbRestaurantById(id, dbPromise, callback) {
@@ -109,7 +125,62 @@ class DBHelper {
 
       return tx.complete;
     })
+    .then(() => callback(null, ''))
     .catch(e => callback(e, `Save to local database failed.`));
+  }
+
+  /**
+   * Delete review from the local storage.
+   */
+  static deleteReviewFromLocalDb(reviewId, dbPromise, callback) {
+    if(dbPromise === null) return;
+
+    return dbPromise.then(db => {
+      const tx = db.transaction('reviews', 'readwrite');
+      const reviewsStore = tx.objectStore('reviews');
+      reviewsStore.delete(reviewId);
+
+      return tx.complete;
+    })
+    .catch(e => callback(e, `Delete from local database failed.`));
+  }
+
+  /**
+   * Send all unsent reviews to the remote server.
+   */
+  static sendUnsentReviews(dbPromise) {
+    DBHelper.fetchLocalDbReviews(dbPromise, (error, reviews) => {
+      if (error) {
+        console.error(error);
+      } 
+      else {
+        for(const review of reviews){
+          DBHelper.sendAndDeleteUnsentReview(review, dbPromise);
+        }
+      }
+    });
+  }
+
+  /**
+   * Send review to the remote server and delete it from the local storage.
+   */
+  static sendAndDeleteUnsentReview(review, dbPromise) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews`, {
+      method: 'POST',
+      body: JSON.stringify(review),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      //Success, delete review from the local storage.
+      DBHelper.deleteReviewFromLocalDb(review.id, dbPromise, (error, message) => {
+        if (error) {
+          console.error(error);
+        } 
+      });
+    })
+    .catch(e => console.error(e));
   }
 
   /**
@@ -141,8 +212,8 @@ class DBHelper {
     fetch(`${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=${isFavorite}`, {
       method: 'PUT'
     })
-      .then(response => callback(null, response))
-      .catch(e => callback(e, `Error when updating favorite state to the remote server.`));
+    .then(response => callback(null, response))
+    .catch(e => callback(e, `Error when updating favorite state to the remote server.`));
   }
 
   /**

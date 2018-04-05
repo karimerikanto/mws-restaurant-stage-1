@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
   registerServiceworker();
   fetchRestaurants();
+  
+  DBHelper.sendUnsentReviews(self.dbPromise);
 });
 
 /**

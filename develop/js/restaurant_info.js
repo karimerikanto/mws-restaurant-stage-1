@@ -305,11 +305,13 @@ const submitNewReview = (error, review) => {
 
   DBHelper.saveReviewToLocalDb(review, self.dbPromise, (error, message) => {
     if (error) {
+      console.error(error);
       snackbar.queueMessage('An error happened while saving a new review', 'error');
       return;
     }
-
-    //TODO: Start sending unsent reviews
+    else{
+      DBHelper.sendUnsentReviews(self.dbPromise);
+    }
   });
 
   self.addReviewDialog.close();
