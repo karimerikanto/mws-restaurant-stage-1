@@ -206,6 +206,16 @@ class DBHelper {
   }
 
   /**
+   * Fetch a restaurant reviews by its ID from the remote server.
+   */
+  static fetchRestaurantReviews(restaurantId, callback) {
+    fetch(`${DBHelper.DATABASE_URL}/reviews/?restaurant_id=${restaurantId}`)
+      .then(response => response.json())
+      .then(restaurantReviewDataAsJson => callback(null, restaurantReviewDataAsJson))
+      .catch(e => callback(e, `Error when fetching restaurant reviews from the remote server.`));
+  }
+
+  /**
    * Update restaurant state to the remote server.
    */
   static updateRestaurantFavoriteState(id, isFavorite, callback) {

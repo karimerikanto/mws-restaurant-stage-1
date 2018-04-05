@@ -144,8 +144,16 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-  // fill reviews
-  fillReviewsHTML();
+
+  DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
+    if(error !== null){
+      console.error(error);
+    }
+    else{
+      // Fill reviews
+      fillReviewsHTML(reviews);
+    }
+  });
 }
 
 /**
@@ -172,7 +180,7 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+const fillReviewsHTML = (reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -197,7 +205,13 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
 
   const ul = document.getElementById('reviews-list');
 
-  const reviewPromises = reviews.map(review => createReviewHTML(review));
+  const reviewPromises = reviews.sort((reviewA, reviewB) => {
+        const timeA = new Date(reviewA.createdAt);
+        const timeB = new Date(reviewB.createdAt);
+
+        return timeB - timeA;
+      })
+      .map(review => createReviewHTML(review));
 
   Promise.all(reviewPromises).then(function(listItems) {
     for(const listItem of listItems){
@@ -220,8 +234,9 @@ const createReviewHTML = (review) => {
     name.innerHTML = review.name;
     li.appendChild(name);
 
+    const createdAt = new Date(review.createdAt);
     const date = document.createElement('p');
-    date.innerHTML = review.date;
+    date.innerHTML = createdAt.toLocaleString();
     li.appendChild(date);
 
     const rating = document.createElement('p');
