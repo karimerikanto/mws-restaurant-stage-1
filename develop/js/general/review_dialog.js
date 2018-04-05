@@ -200,7 +200,7 @@ class AddReviewDialog {
 		this.submitCallback(null, {
 			name: this.getNameValue(),
 			rating: this.getRatingValue(),
-			comment: this.getCommentValue()
+			comments: this.getCommentValue()
 		})
 	}
 
