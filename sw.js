@@ -1,4 +1,4 @@
-const staticCacheName = 'restaurant-review-v6';
+const staticCacheName = 'restaurant-review-v7';
 const remoteCacheName = 'restaurant-review-remotes';
 const imagesCacheName = 'restaurant-review-images';
 
@@ -78,17 +78,18 @@ self.addEventListener('fetch', event => {
 
     //Check if the path is for restaurant images and try to get them from cache if they are.
     if(requestUrl.pathname.startsWith('/img/')){
-      return caches.open(imagesCacheName).then(cache => {
-        return cache.match(event.request).then(response => {
-          if (response) return response;
+      return event.respondWith(
+        caches.open(imagesCacheName).then(cache => {
+          return cache.match(event.request).then(response => {
+            if (response) return response;
 
-          return fetch(event.request)
-            .then(imageResponse => {
-              cache.put(event.request, imageResponse.clone());
-              return imageResponse;
-            });
-        });
-      });
+            return fetch(event.request)
+              .then(imageResponse => {
+                cache.put(event.request, imageResponse.clone());
+                return imageResponse;
+              });
+          });
+        }));
     }
   }
 
