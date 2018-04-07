@@ -145,15 +145,8 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
 
-  DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
-    if(error !== null){
-      console.error(error);
-    }
-    else{
-      // Fill reviews
-      fillReviewsHTML(reviews);
-    }
-  });
+  // Fill reviews
+  fillReviewsHTML();
 }
 
 /**
@@ -180,7 +173,7 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews) => {
+const fillReviewsHTML = () => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -196,30 +189,43 @@ const fillReviewsHTML = (reviews) => {
 
   container.appendChild(addReviewBtn);
 
-  if (!reviews) {
-    const noReviews = document.createElement('p');
-    noReviews.innerHTML = 'No reviews yet!';
-    container.appendChild(noReviews);
-    return;
-  }
+  DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
+    if(error !== null){
+      console.error(error);
+      const failedToGetReviews = document.createElement('p');
+      failedToGetReviews.innerHTML = 'Failed to get reviews.';
+      container.appendChild(failedToGetReviews);
 
-  const ul = document.getElementById('reviews-list');
+      snackbar.queueMessage('Failed to get reviews', 'error');
+      return;
+    }
+    else{
+      if (!reviews) {
+        const noReviews = document.createElement('p');
+        noReviews.innerHTML = 'No reviews yet!';
+        container.appendChild(noReviews);
+        return;
+      }
 
-  const reviewPromises = reviews.sort((reviewA, reviewB) => {
-        const timeA = new Date(reviewA.createdAt);
-        const timeB = new Date(reviewB.createdAt);
+      const ul = document.getElementById('reviews-list');
 
-        return timeB - timeA;
-      })
-      .map(review => createReviewHTML(review));
+      const reviewPromises = reviews.sort((reviewA, reviewB) => {
+            const timeA = new Date(reviewA.createdAt);
+            const timeB = new Date(reviewB.createdAt);
 
-  Promise.all(reviewPromises).then(function(listItems) {
-    for(const listItem of listItems){
-      ul.appendChild(listItem);
+            return timeB - timeA;
+          })
+          .map(review => createReviewHTML(review));
+
+      Promise.all(reviewPromises).then(function(listItems) {
+        for(const listItem of listItems){
+          ul.appendChild(listItem);
+        }
+      });
+
+      container.appendChild(ul);
     }
   });
-
-  container.appendChild(ul);
 }
 
 /**
