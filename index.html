@@ -24,11 +24,11 @@
     </section>
     <section id="filter-container">
       <div class="filter-options">
-        <h2>Filter Results</h2>
-        <select id="neighborhoods-select" tabindex="0" name="neighborhoods" onchange="fetchRestaurants()" aria-label="Neighborhoods">
+        <h2 class="filter-title">Filter Results</h2>
+        <select id="neighborhoods-select" class="filter-select" tabindex="0" name="neighborhoods" onchange="fetchRestaurants()" aria-label="Neighborhoods">
           <option value="all">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" tabindex="0" name="cuisines" onchange="fetchRestaurants()" aria-label="Cuisines">
+        <select id="cuisines-select" class="filter-select" tabindex="0" name="cuisines" onchange="fetchRestaurants()" aria-label="Cuisines">
           <option value="all">All Cuisines</option>
         </select>
         <div id="favorites-container">
