@@ -43,11 +43,21 @@ gulp.task('images', function() {
 });
 
 gulp.task('styles', function() {
-	gulp.src('develop/css/*.css')
+	gulp.src(['develop/css/general.css', 'develop/css/snackbar.css', 'develop/css/main.css'])
 		.pipe(autoprefixer({
 			browsers: ['last 2 versions']
 		}))
         .pipe(cssmin())
+		.pipe(concat('main.css'))
+        .pipe(rename({suffix: '.min'}))
+		.pipe(gulp.dest('css'));
+
+	gulp.src(['develop/css/general.css', 'develop/css/snackbar.css', 'develop/css/restaurant_dialog.css', 'develop/css/restaurant_info.css'])
+		.pipe(autoprefixer({
+			browsers: ['last 2 versions']
+		}))
+        .pipe(cssmin())
+		.pipe(concat('restaurant_info.css'))
         .pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest('css'));
 });

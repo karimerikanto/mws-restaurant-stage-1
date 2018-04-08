@@ -21,7 +21,8 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(staticCacheName).then(cache => {
       return cache.addAll([
-        'css/styles.min.css',
+        'css/main.min.css',
+        'css/restaurant_info.min.css',
         'js/main.js',
         'js/restaurant_info.js',
         '/',

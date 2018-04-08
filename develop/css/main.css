@@ -1,0 +1,118 @@
+@charset "utf-8";
+/* CSS Document */
+
+/* ====================== Restaurant Filtering ====================== */
+#filter-container {
+  width: 100%;
+}
+.filter-options {
+  width: calc(100% - 20px);
+  background-color: #0b5bc2;
+  align-items: center;
+  padding: 12px 10px;
+}
+.filter-title {
+  color: white;
+  font-size: 1rem;
+  font-weight: normal;
+  line-height: 1;
+  margin: 0 20px;
+}
+.filter-select {
+  background-color: white;
+  border: 1px solid #fff;
+  font-family: Arial,sans-serif;
+  font-size: 11pt;
+  height: 35px;
+  letter-spacing: 0;
+  margin: 10px;
+  padding: 0 10px;
+  width: 200px;
+}
+
+#favorites-checkbox-label {
+  font-family: Arial,sans-serif;
+  color: #fff;
+  font-size: 13pt;
+}
+
+#favorites-container {
+  margin: 10px;
+}
+
+/* ====================== Restaurant Listing ====================== */
+#restaurants-list {
+  background-color: #f3f3f3;
+  list-style: outside none none;
+  margin: 0 auto;
+  padding: 30px 15px 60px;
+  text-align: center;
+  display: table;
+}
+@media screen and (min-width: 960px){
+  #restaurants-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.restaurants-list-item {
+  background-color: #fff;
+  border: 2px solid #ccc;
+  font-family: Arial,sans-serif;
+  margin: 5px;
+  padding: 20px;
+  text-align: left;
+  width: calc(100% - 54px);
+  max-width: 400px;
+}
+
+.restaurant-img {
+  background-color: #ccc;
+  display: block;
+  margin: 0;
+  max-width: 450px;
+  width: 100%;
+}
+.restaurant-neighborhood,
+.restaurant-address {
+  margin: 0;
+  font-size: 11pt;
+}
+@media screen and (min-width: 700px){
+  .restaurant-neighborhood,
+  .restaurant-address {
+    font-size: 13pt;
+  }
+}
+.restaurant-more-button {
+  background-color: #b15101;
+  border-bottom: 3px solid #eee;
+  color: #fff;
+  display: inline-block;
+  font-size: 10pt;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.restaurant-name {
+  font-size: 14pt;
+  color: #b15101;
+  font-family: Arial,sans-serif;
+  font-weight: 200;
+  letter-spacing: 0;
+  line-height: 1.3;
+  margin: 20px 0 10px;
+  text-transform: uppercase;
+}
+.restaurant-favorite {
+  width: 40px;
+  padding: 6px;
+  opacity: 0.6;
+  float: right;
+}
+.restaurant-favorite:hover {
+  opacity: 1.0;
+}
