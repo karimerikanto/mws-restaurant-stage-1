@@ -23,7 +23,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
   registerServiceworker();
   fetchRestaurants();
   
-  DBHelper.sendUnsentReviews(self.dbPromise);
+  DBHelper.sendUnsentReviews(self.dbPromise, (error) => {
+    if(error){
+      console.error(error);
+    }
+  });
 });
 
 /**

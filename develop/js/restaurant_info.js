@@ -13,6 +13,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
   self.addReviewDialog = new AddReviewDialog((error, review) => submitNewReview(error, review));
 
   registerServiceworker();
+  DBHelper.sendUnsentReviews(self.dbPromise, (error) => {
+    if(error){
+      console.error(error);
+    }
+  });
 });
 
 /**
@@ -189,15 +194,43 @@ const fillReviewsHTML = () => {
 
   container.appendChild(addReviewBtn);
 
+  updateReviews(container);
+}
+
+/**
+ * Update reviews to the container.
+ */
+const updateReviews = (container) => {  
+  const ul = document.getElementById('reviews-list');
+  ul.innerHTML = '';
+
   DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
     if(error !== null){
       console.error(error);
-      const failedToGetReviews = document.createElement('p');
-      failedToGetReviews.innerHTML = 'Failed to get reviews.';
-      container.appendChild(failedToGetReviews);
 
-      snackbar.queueMessage('Failed to get reviews', 'error');
-      return;
+      snackbar.queueMessage('Failed to get newest reviews', 'error');
+
+      DBHelper.fetchLocalDbReviews(self.dbPromise, (error, reviews) => {
+        if (error) {
+          console.error(error);
+          const failedToGetReviews = document.createElement('p');
+          failedToGetReviews.innerHTML = 'Failed to get reviews.';
+          container.appendChild(failedToGetReviews);
+        } 
+        else {
+          DBHelper.fetchLocalDbReviews(self.dbPromise, (error, reviews) => {
+            DBHelper.fetchLocalDbUnsentReviews(dbPromise, (error, unsentReviews) => {
+              if (!error) {
+                //Let's fill in unsent reviews if there is any
+                fillReviewsToContainer(unsentReviews, container);
+              }
+
+              //Fill rest of the reviews
+              fillReviewsToContainer(reviews, container);
+            });
+          });
+        }
+      });
     }
     else{
       if (!reviews) {
@@ -207,54 +240,66 @@ const fillReviewsHTML = () => {
         return;
       }
 
-      const ul = document.getElementById('reviews-list');
+      fillReviewsToContainer(reviews, container);
 
-      const reviewPromises = reviews.sort((reviewA, reviewB) => {
-            const timeA = new Date(reviewA.createdAt);
-            const timeB = new Date(reviewB.createdAt);
-
-            return timeB - timeA;
-          })
-          .map(review => createReviewHTML(review));
-
-      Promise.all(reviewPromises).then(function(listItems) {
-        for(const listItem of listItems){
-          ul.appendChild(listItem);
-        }
-      });
-
-      container.appendChild(ul);
+      DBHelper.saveReviewsToLocalDb(self.dbPromise, reviews, (error) => {
+          if (error) {
+            console.error(error);
+          }
+        });
     }
   });
+}
+
+/**
+ * Serve saved offline reviews from the local storage.
+ */
+const fillReviewsToContainer = (reviews, container) => {
+  const ul = document.getElementById('reviews-list');
+
+  const listItems = reviews.sort((reviewA, reviewB) => {
+      const timeA = new Date(reviewA.createdAt);
+      const timeB = new Date(reviewB.createdAt);
+
+      return timeB - timeA;
+    })
+    .map(review => createReviewHTML(review));
+
+  for(const listItem of listItems){
+    ul.appendChild(listItem);
+  }
+
+  container.appendChild(ul);
 }
 
 /**
  * Create review HTML and add it to the webpage.
  */
 const createReviewHTML = (review) => {
-  return new Promise(resolve => {
-    const li = document.createElement('li');
-    li.setAttribute("tabindex", 0);
+  const li = document.createElement('li');
+  li.setAttribute("tabindex", 0);
 
-    const name = document.createElement('p');
-    name.innerHTML = review.name;
-    li.appendChild(name);
+  const name = document.createElement('p');
+  name.innerHTML = review.name;
+  li.appendChild(name);
 
+  if(review.createdAt !== undefined && 
+      review.createdAt !== 'undefined'){
     const createdAt = new Date(review.createdAt);
     const date = document.createElement('p');
     date.innerHTML = createdAt.toLocaleString();
     li.appendChild(date);
+  }
 
-    const rating = document.createElement('p');
-    rating.innerHTML = `Rating: ${review.rating}`;
-    li.appendChild(rating);
+  const rating = document.createElement('p');
+  rating.innerHTML = `Rating: ${review.rating}`;
+  li.appendChild(rating);
 
-    const comments = document.createElement('p');
-    comments.innerHTML = review.comments;
-    li.appendChild(comments);
+  const comments = document.createElement('p');
+  comments.innerHTML = review.comments;
+  li.appendChild(comments);
 
-    resolve(li);
-  });
+  return li;
 }
 
 /**
@@ -324,14 +369,20 @@ const submitNewReview = (error, review) => {
 
   review.restaurant_id = self.restaurant.id;
 
-  DBHelper.saveReviewToLocalDb(review, self.dbPromise, (error, message) => {
+  DBHelper.saveUnsentReviewToLocalDb(review, self.dbPromise, (error, message) => {
     if (error) {
       console.error(error);
       snackbar.queueMessage('An error happened while saving a new review', 'error');
       return;
     }
     else{
-      DBHelper.sendUnsentReviews(self.dbPromise);
+      DBHelper.sendUnsentReviews(self.dbPromise, (error) => {
+        if(error){
+          console.error(error);
+        }
+
+        updateReviews(document.getElementById('reviews-container'));
+      });
     }
   });
 
