@@ -9,7 +9,7 @@ const allCacheNames = [
 ];
 
 const remoteCachePathPrefixes = [
-  'https://maps.googleapis.com/maps/api/js?key=AIzaSyB14vP09l2oJojjzpXxQGAtcYHz5caC2IQ&callback=initMap', 
+  'https://maps.googleapis.com/maps/api/js?key=AIzaSyB14vP09l2oJojjzpXxQGAtcYHz5caC2IQ', 
   'https://maps.googleapis.com/maps-api',
   'https://maps.gstatic.com/mapfiles'
   ];
