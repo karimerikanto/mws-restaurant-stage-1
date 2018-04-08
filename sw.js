@@ -27,13 +27,6 @@ self.addEventListener('install', event => {
         'js/restaurant_info.js',
         '/',
         'restaurant.html',
-        'manifest.webmanifest',
-        'icons/icon-128x128.png',
-        'icons/icon-144x144.png',
-        'icons/icon-152x152.png',
-        'icons/icon-192x192.png',
-        'icons/icon-256x256.png',
-        'icons/icon-512x512.png',
         'image_missing.svg',
         'favorite_on.svg',
         'favorite_off.svg'
