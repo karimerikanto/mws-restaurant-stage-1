@@ -203,50 +203,39 @@ const fillReviewsHTML = () => {
 const updateReviews = (container) => {  
   const ul = document.getElementById('reviews-list');
   ul.innerHTML = '';
-
-  DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
-    if(error !== null){
+  
+  //Fetch reviews from the local database
+  DBHelper.fetchLocalDbReviews(self.dbPromise, (error, localDbReviews) => {
+    if (error) {
       console.error(error);
-
-      snackbar.queueMessage('Failed to get newest reviews', 'error');
-
-      DBHelper.fetchLocalDbReviews(self.dbPromise, (error, reviews) => {
-        if (error) {
-          console.error(error);
-          const failedToGetReviews = document.createElement('p');
-          failedToGetReviews.innerHTML = 'Failed to get reviews.';
-          container.appendChild(failedToGetReviews);
-        } 
-        else {
-          DBHelper.fetchLocalDbReviews(self.dbPromise, (error, reviews) => {
-            DBHelper.fetchLocalDbUnsentReviews(dbPromise, (error, unsentReviews) => {
-              if (!error) {
-                //Let's fill in unsent reviews if there is any
-                fillReviewsToContainer(unsentReviews, container);
-              }
-
-              //Fill rest of the reviews
-              fillReviewsToContainer(reviews, container);
-            });
-          });
-        }
-      });
-    }
-    else{
-      if (!reviews) {
+      const failedToGetReviews = document.createElement('p');
+      failedToGetReviews.innerHTML = 'Failed to get reviews.';
+      container.appendChild(failedToGetReviews);
+    } 
+    else {
+      if (!localDbReviews) {
         const noReviews = document.createElement('p');
         noReviews.innerHTML = 'No reviews yet!';
         container.appendChild(noReviews);
-        return;
       }
 
-      fillReviewsToContainer(reviews, container);
+      //Fill reviews with the local storage reviews
+      fillReviewsToContainer(localDbReviews, container);
 
-      DBHelper.saveReviewsToLocalDb(self.dbPromise, reviews, (error) => {
-          if (error) {
-            console.error(error);
-          }
-        });
+      //Get newest reviews from the remote server
+      DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
+        if(error !== null){
+          console.error(error);
+        }
+        else{
+          //Save newest revies to the local storage
+          DBHelper.saveReviewsToLocalDb(self.dbPromise, reviews, (error) => {
+              if (error) {
+                console.error(error);
+              }
+            });
+        }
+      });
     }
   });
 }
@@ -283,13 +272,10 @@ const createReviewHTML = (review) => {
   name.innerHTML = review.name;
   li.appendChild(name);
 
-  if(review.createdAt !== undefined && 
-      review.createdAt !== 'undefined'){
-    const createdAt = new Date(review.createdAt);
-    const date = document.createElement('p');
-    date.innerHTML = createdAt.toLocaleString();
-    li.appendChild(date);
-  }
+  const createdAt = new Date(review.createdAt);
+  const date = document.createElement('p');
+  date.innerHTML = createdAt.toLocaleString();
+  li.appendChild(date);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -369,7 +355,7 @@ const submitNewReview = (error, review) => {
 
   review.restaurant_id = self.restaurant.id;
 
-  DBHelper.saveUnsentReviewToLocalDb(review, self.dbPromise, (error, message) => {
+  DBHelper.saveReviewToLocalDb(review, self.dbPromise, (error, message) => {
     if (error) {
       console.error(error);
       snackbar.queueMessage('An error happened while saving a new review', 'error');
@@ -380,9 +366,9 @@ const submitNewReview = (error, review) => {
         if(error){
           console.error(error);
         }
-
-        updateReviews(document.getElementById('reviews-container'));
       });
+
+      updateReviews(document.getElementById('reviews-container'));
     }
   });
 
