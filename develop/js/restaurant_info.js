@@ -8,6 +8,7 @@ let addReviewDialog;
  * Register service as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  setStyleSheet();
   self.dbPromise = DBHelper.openDatabase();
   self.snackbar = new Snackbar();
   self.addReviewDialog = new AddReviewDialog((error, review) => submitNewReview(error, review));
@@ -19,6 +20,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
   });
 });
+
+/**
+ * Set style sheet.
+ */
+const setStyleSheet = () => {
+  var head = document.head;
+  var link = document.createElement("link");
+
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  link.href = "css/restaurant_info.min.css";
+
+  head.appendChild(link);
+}
 
 /**
  * Register service worker.

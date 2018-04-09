@@ -13,6 +13,7 @@ let snackbar;
  * Register service worker and fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  setStyleSheet();
   self.dbPromise = DBHelper.openDatabase();
   self.snackbar = new Snackbar();
 
@@ -29,6 +30,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
   });
 });
+
+/**
+ * Set style sheet.
+ */
+const setStyleSheet = () => {
+  var head = document.head;
+  var link = document.createElement("link");
+
+  link.type = "text/css";
+  link.rel = "stylesheet";
+  link.href = "css/main.min.css";
+
+  head.appendChild(link);
+}
 
 /**
  * Register service worker.
