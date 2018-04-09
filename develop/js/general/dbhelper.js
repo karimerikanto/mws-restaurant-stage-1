@@ -49,14 +49,16 @@ class DBHelper {
   /**
    * Fetch all reviews from local storage.
    */
-  static fetchLocalDbReviews(dbPromise, callback) {
+  static fetchLocalDbReviewsByRestaurantId(restaurant_id, dbPromise, callback) {
     if(dbPromise === null) return;
 
     return dbPromise.then(db => {
       const tx = db.transaction('reviews', 'readonly');
       const reviewsStore = tx.objectStore('reviews');
       return reviewsStore.getAll();
-    }).then(reviews => {
+    })
+    .then(reviews => reviews.filter(review => review.restaurant_id === restaurant_id))
+    .then(reviews => {
         callback(null, reviews);
     })
     .catch(e => callback(e, `Fetch from local database failed.`));
@@ -208,7 +210,7 @@ class DBHelper {
       body: JSON.stringify({
         name: review.name,
         rating: review.rating,
-        restaurant_id: review.reustaurant_id,
+        restaurant_id: review.restaurant_id,
         comments: review.comments
       }),
       headers: {
@@ -224,7 +226,7 @@ class DBHelper {
           console.error(error);
         }
       });
-
+      
       //Save same review which the server has
       DBHelper.saveReviewToLocalDb(reviewAsResponse, dbPromise, (error, message) => {
         if(error){

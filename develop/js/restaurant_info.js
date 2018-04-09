@@ -203,9 +203,9 @@ const fillReviewsHTML = () => {
 const updateReviews = (container) => {  
   const ul = document.getElementById('reviews-list');
   ul.innerHTML = '';
-  
+
   //Fetch reviews from the local database
-  DBHelper.fetchLocalDbReviews(self.dbPromise, (error, localDbReviews) => {
+  DBHelper.fetchLocalDbReviewsByRestaurantId(self.restaurant.id, self.dbPromise, (error, localDbReviews) => {
     if (error) {
       console.error(error);
       const failedToGetReviews = document.createElement('p');
