@@ -23,7 +23,7 @@ class AddReviewDialog {
   		this.dialog.setAttribute('aria-modal', 'true');
 
   		//Content holder
-  		const content = document.createElement('div');
+  		const content = document.createElement('form');
   		content.className = 'modal-content';
 
   		//Close button
@@ -45,9 +45,9 @@ class AddReviewDialog {
   		content.append(title);
 
   		//Name label
-  		const nameLabel = document.createElement('p');
+  		const nameLabel = document.createElement('label');
   		nameLabel.className = 'add-review-subtitle';
-  		nameLabel.innerHTML = 'Name';
+  		nameLabel.innerHTML = '* Name';
   		
   		content.append(nameLabel);
 
@@ -61,9 +61,9 @@ class AddReviewDialog {
   		this.focusableElements.push(this.nameField);
 
   		//Rating label
-  		const ratingLabel = document.createElement('p');
+  		const ratingLabel = document.createElement('label');
   		ratingLabel.className = 'add-review-subtitle';
-  		ratingLabel.innerHTML = 'Rating';
+  		ratingLabel.innerHTML = '* Rating';
   		
   		content.append(ratingLabel);
 
@@ -95,9 +95,9 @@ class AddReviewDialog {
   		content.append(ratingFieldSet);
 
   		//Comment label
-  		const commentLabel = document.createElement('p');
+  		const commentLabel = document.createElement('label');
   		commentLabel.className = 'add-review-subtitle';
-  		commentLabel.innerHTML = 'Comments';
+  		commentLabel.innerHTML = '* Comments';
   		
   		content.append(commentLabel);
 
