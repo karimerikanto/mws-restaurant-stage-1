@@ -228,31 +228,50 @@ const updateReviews = (container) => {
       container.appendChild(failedToGetReviews);
     } 
     else {
-      if (!localDbReviews) {
-        const noReviews = document.createElement('p');
-        noReviews.innerHTML = 'No reviews yet!';
-        container.appendChild(noReviews);
+      if(localDbReviews.length > 0){
+        //Fill reviews with the local storage reviews
+        fillReviewsToContainer(localDbReviews, container);
       }
-
-      //Fill reviews with the local storage reviews
-      fillReviewsToContainer(localDbReviews, container);
 
       //Get newest reviews from the remote server
       DBHelper.fetchRestaurantReviews(restaurant.id, (error, reviews) => {
         if(error !== null){
           console.error(error);
+
+          if (localDbReviews.length === 0) {
+            appendNoReviewsNotificationToReviewContainer(container);
+          }
         }
         else{
-          //Save newest revies to the local storage
+          //Save newest reviews to the local storage
           DBHelper.saveReviewsToLocalDb(self.dbPromise, reviews, (error) => {
               if (error) {
                 console.error(error);
               }
             });
+
+          //If there is no reviews in the local storage or not in the remote server, show 'no reviews' notification
+          if(reviews.length === 0 && 
+            localDbReviews.length === 0){
+            appendNoReviewsNotificationToReviewContainer(container);
+          }
+          else if(localDbReviews.length === 0){
+            //If there were no reviews in the local storage, but there were reviews in the remote server, show the remote server reviews
+            fillReviewsToContainer(reviews, container);
+          }
         }
       });
     }
   });
+}
+
+/**
+ * Append no reviews notification to the review container.
+ */
+const appendNoReviewsNotificationToReviewContainer = (container) => {
+  const noReviews = document.createElement('p');
+  noReviews.innerHTML = 'No reviews yet!';
+  container.appendChild(noReviews);
 }
 
 /**
